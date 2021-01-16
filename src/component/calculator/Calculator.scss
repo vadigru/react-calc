@@ -1,0 +1,12 @@
+.calculator {
+  width: 600px;
+  height: auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  border: 2px solid black;
+  border-radius: 10px;
+}

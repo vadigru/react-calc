@@ -1,0 +1,18 @@
+.number-btns {
+  margin: 50px 100px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.number-btn {
+  font-size: 45px;
+  width: 80px;
+  height: 80px;
+
+  margin: 10px 5px 10px 5px;
+}
+
+#onoff {
+  font-size: 25px;
+}
