@@ -66,7 +66,7 @@ const Buttons = (props) => {
         return(
           <button
             key={i}
-            className={'number-btn'}
+            className={`number-btn ${CALC_BTNS[i]}`}
             id={CALC_BTNS[i]}
             onClick={() => getNumbers(ValuesMap[CALC_BTNS[i]])}
             disabled={setDisabled(ValuesMap[CALC_BTNS[i]])}

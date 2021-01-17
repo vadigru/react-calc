@@ -57,24 +57,43 @@ const Calculator = () => {
   }
 
   const getSquare = () => {
-    const val = parseInt(numbers.numbersArr.join("")) / 2 / 2;
-    console.log(val);
+    const res = Math.sqrt(numbers.numbersArr.join(""));
+    const resArr = res.toString().split('');
+    valueArray = [];
+    resArr.forEach((item) => {
+      if (typeof parseInt(item) === 'number' && !isNaN(item)) {
+        valueArray.push(parseInt(item));
+      } else {
+        valueArray.push(item);
+      }
+    })
+    setShowOnDisplay({showOnDisplay: res});
+    setNumbersArr({numbersArr: valueArray});
+    setCalculated({calculated: false})
   }
 
-  const getSum = () => {
-    const newValue = eval(numbers.numbersArr.join(''));
+  const calculate = () => {
+    const res = eval(numbers.numbersArr.join(''));
+    const resArr = res.toString().split('');
     valueArray = [];
-    valueArray.push(newValue);
-    setShowOnDisplay({showOnDisplay: newValue});
+    resArr.forEach((item) => {
+      if (typeof parseInt(item) === 'number' && !isNaN(item)) {
+        valueArray.push(parseInt(item));
+      } else {
+        valueArray.push(item);
+      }
+    })
+    setShowOnDisplay({showOnDisplay: res});
     setNumbersArr({numbersArr: valueArray});
-    setCalculated({calculated: true})
+    setCalculated({calculated: true});
+    console.log(numbers.numbersArr);
   }
 
   const getResult = () => {
     if (typeof valueArray[valueArray.length - 1] !== 'number') {
       return;
     } 
-    return getSum();
+    return calculate();
   }
 
   const handlePressedButtons = (targetContent) => {

@@ -9,10 +9,18 @@
   font-size: 45px;
   width: 80px;
   height: 80px;
+  border-radius: 5px;
 
   margin: 10px 5px 10px 5px;
+  box-shadow: inset 0 0 15px 0 grey;
+
 }
 
 #onoff {
   font-size: 25px;
+  background-color: orange;
+}
+
+#clear {
+  background-color: lightgoldenrodyellow;
 }
