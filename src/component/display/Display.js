@@ -5,7 +5,9 @@ const Display = (props) => {
   const {showOnDisplay, isCalcOn} = props;
   return(
     <div className={`display display${isCalcOn ? `--on` : `--off`}`}>
-      <span>{showOnDisplay}</span>
+      <span className={`display-numbers`}> 
+        <span>{showOnDisplay}</span>
+      </span>
     </div>
   )
 }

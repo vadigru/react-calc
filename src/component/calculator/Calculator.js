@@ -10,7 +10,7 @@ const Calculator = () => {
   const [onOff, setOnOff] = useState({isCalcOn: false});
   const [display, setShowOnDisplay] = useState({showOnDisplay: ''});
   const [numbers, setNumbersArr] = useState({numbersArr: []});
-  const [calculated, setCalculated] = useState({calculated: false});
+  // const [calculated, setCalculated] = useState({calculated: false});
   const [decimal, setDecimal] = useState({dot: false});
 
   const toggleOnOff = () => {
@@ -19,14 +19,14 @@ const Calculator = () => {
         setOnOff({isCalcOn: true});
         setShowOnDisplay({showOnDisplay: '0'});
         setNumbersArr({numbersArr: valueArray});
-        setCalculated({calculated: false});
+        // setCalculated({calculated: false});
         setDecimal({dot: false});
       } else {
         valueArray = [];
         setOnOff({isCalcOn: false})
         setShowOnDisplay({showOnDisplay: ''})
         setNumbersArr({numbersArr: valueArray});
-        setCalculated({calculated: false});
+        // setCalculated({calculated: false});
         setDecimal({dot: false});
       }
   }
@@ -35,7 +35,7 @@ const Calculator = () => {
     valueArray = [];
     setShowOnDisplay({showOnDisplay: '0'});
     setNumbersArr({numbersArr: valueArray});
-    setCalculated({calculated: false});
+    // setCalculated({calculated: false});
     setDecimal({dot: false});
   }
 
@@ -44,7 +44,7 @@ const Calculator = () => {
       const popped = valueArray.pop();
       setShowOnDisplay({showOnDisplay: numbers.numbersArr.join('')});
       setNumbersArr({numbersArr: valueArray});
-      setCalculated({calculated: false})
+      // setCalculated({calculated: false})
       if (popped === '.') {
         setDecimal({dot: false});
       }
@@ -57,36 +57,42 @@ const Calculator = () => {
   }
 
   const getSquare = () => {
-    const res = Math.sqrt(numbers.numbersArr.join(""));
+    const num = eval(numbers.numbersArr.join(''));
+    if (num < 0) {
+      return;
+    }
+    const res = Math.sqrt(num);
     const resArr = res.toString().split('');
     valueArray = [];
-    resArr.forEach((item) => {
+    resArr.slice(0, 12).forEach((item) => {
       if (typeof parseInt(item) === 'number' && !isNaN(item)) {
         valueArray.push(parseInt(item));
       } else {
         valueArray.push(item);
       }
     })
-    setShowOnDisplay({showOnDisplay: res});
+    const resToDisplay = valueArray.join('');
+    setShowOnDisplay({showOnDisplay: resToDisplay});
     setNumbersArr({numbersArr: valueArray});
-    setCalculated({calculated: false})
+    // setCalculated({calculated: false})
   }
 
   const calculate = () => {
     const res = eval(numbers.numbersArr.join(''));
     const resArr = res.toString().split('');
     valueArray = [];
-    resArr.forEach((item) => {
+    resArr.slice(0, 12).forEach((item) => {
       if (typeof parseInt(item) === 'number' && !isNaN(item)) {
         valueArray.push(parseInt(item));
       } else {
         valueArray.push(item);
       }
     })
-    setShowOnDisplay({showOnDisplay: res});
+    const resToDisplay = valueArray.join('');
+    setShowOnDisplay({showOnDisplay: resToDisplay});
     setNumbersArr({numbersArr: valueArray});
-    setCalculated({calculated: true});
-    console.log(numbers.numbersArr);
+    // setCalculated({calculated: true});
+    // console.log(numbers.numbersArr);
   }
 
   const getResult = () => {
@@ -138,7 +144,7 @@ const Calculator = () => {
     valueArray.push(targetContent);
     setShowOnDisplay({showOnDisplay: numbers.numbersArr.join('') || targetContent});
     setNumbersArr({numbersArr: valueArray});
-    setCalculated({calculated: false})
+    // setCalculated({calculated: false})
   }
 
   const getNumbers = (value) => {
