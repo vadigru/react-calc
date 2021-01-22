@@ -5,52 +5,53 @@ import Buttons from '../Buttons/Buttons';
 import './Calculator.scss';
 
 let valueArray = [];
+let displayArray = [];
 
 const Calculator = () => {
   const [onOff, setOnOff] = useState({isCalcOn: false});
   const [display, setShowOnDisplay] = useState({showOnDisplay: ''});
   const [numbers, setNumbersArr] = useState({numbersArr: []});
-  // const [calculated, setCalculated] = useState({calculated: false});
   const [decimal, setDecimal] = useState({dot: false});
 
   const toggleOnOff = () => {
       if (!onOff.isCalcOn) {
         valueArray = [];
+        displayArray = [];
         setOnOff({isCalcOn: true});
         setShowOnDisplay({showOnDisplay: '0'});
         setNumbersArr({numbersArr: valueArray});
-        // setCalculated({calculated: false});
         setDecimal({dot: false});
       } else {
         valueArray = [];
+        displayArray = [];
         setOnOff({isCalcOn: false})
         setShowOnDisplay({showOnDisplay: ''})
         setNumbersArr({numbersArr: valueArray});
-        // setCalculated({calculated: false});
         setDecimal({dot: false});
       }
   }
 
   const clearDisplay = () => {
     valueArray = [];
+    displayArray = [];
     setShowOnDisplay({showOnDisplay: '0'});
     setNumbersArr({numbersArr: valueArray});
-    // setCalculated({calculated: false});
     setDecimal({dot: false});
   }
 
   const deleteLastValue = () => {
-    if (valueArray.length > 0) {
+    if (displayArray.length > 0) {
       const popped = valueArray.pop();
-      setShowOnDisplay({showOnDisplay: numbers.numbersArr.join('')});
+      displayArray.pop();
+      setShowOnDisplay({showOnDisplay: displayArray.join('')});
       setNumbersArr({numbersArr: valueArray});
-      // setCalculated({calculated: false})
       if (popped === '.') {
         setDecimal({dot: false});
       }
     }
-    if (valueArray.length === 0) {
+    if (displayArray.length === 0) {
       valueArray = [];
+      displayArray = [];
       setShowOnDisplay({showOnDisplay: '0'});
       setNumbersArr({numbersArr: valueArray});
     }
@@ -58,41 +59,51 @@ const Calculator = () => {
 
   const getSquare = () => {
     const num = eval(numbers.numbersArr.join(''));
-    if (num < 0) {
+    if (num <= 0) {
       return;
     }
     const res = Math.sqrt(num);
     const resArr = res.toString().split('');
     valueArray = [];
+    displayArray = [];
     resArr.slice(0, 12).forEach((item) => {
       if (typeof parseInt(item) === 'number' && !isNaN(item)) {
         valueArray.push(parseInt(item));
+        displayArray.push(parseInt(item));
       } else {
         valueArray.push(item);
+        displayArray.push(item);
       }
     })
-    const resToDisplay = valueArray.join('');
+    const resToDisplay = displayArray.join('');
     setShowOnDisplay({showOnDisplay: resToDisplay});
     setNumbersArr({numbersArr: valueArray});
-    // setCalculated({calculated: false})
   }
 
   const calculate = () => {
     const res = eval(numbers.numbersArr.join(''));
     const resArr = res.toString().split('');
     valueArray = [];
-    resArr.slice(0, 12).forEach((item) => {
+    displayArray = [];
+    resArr.forEach((item) => {
       if (typeof parseInt(item) === 'number' && !isNaN(item)) {
         valueArray.push(parseInt(item));
+        displayArray.push(parseInt(item));
       } else {
         valueArray.push(item);
+        displayArray.push(item);
       }
     })
-    const resToDisplay = valueArray.join('');
+    const resToDisplay = displayArray.join('');
     setShowOnDisplay({showOnDisplay: resToDisplay});
     setNumbersArr({numbersArr: valueArray});
-    // setCalculated({calculated: true});
-    // console.log(numbers.numbersArr);
+    console.log(!displayArray.includes('.'));
+    if (displayArray.includes('.')) {
+      setDecimal({dot: true});
+      console.log(decimal);
+    } else {
+      setDecimal({dot: false});
+    }
   }
 
   const getResult = () => {
@@ -103,16 +114,26 @@ const Calculator = () => {
   }
 
   const handlePressedButtons = (targetContent) => {
-    if ((targetContent === '+' || targetContent === '-' || targetContent === '*' || targetContent === '/') && decimal.dot === true) {
-      setDecimal({dot: false})
-    }
-
-    if ((numbers.numbersArr.length === 0 || typeof valueArray[valueArray.length - 1] === 'string') && (targetContent === '+' || targetContent === '*' || targetContent === '/')) {
-      return;
-    }
-
-    if (targetContent === '-' && typeof valueArray[valueArray.length - 1] === 'string') {
-      return;
+    if ((targetContent === '+'
+      || targetContent === '-'
+      || targetContent === '*'
+      || targetContent === '/')) {
+      if ((numbers.numbersArr.length === 0 || typeof valueArray[valueArray.length - 1] === 'string')
+      && (targetContent === '+' || targetContent === '*' || targetContent === '/')) {
+        return;
+      }
+      if (targetContent === '-' && typeof valueArray[valueArray.length - 1] === 'string') {
+        return;
+      }
+      displayArray = [];
+      if ((targetContent === '+'
+        || targetContent === '-'
+        || targetContent === '*'
+        || targetContent === '/')
+        && decimal.dot === true) {
+        setDecimal({dot: false})
+      }
+      setShowOnDisplay({showOnDisplay: targetContent})
     }
 
     if (targetContent === '.') {
@@ -126,25 +147,20 @@ const Calculator = () => {
       setDecimal({dot: true});
     }
 
-    // if ((typeof valueArray[valueArray.length - 1] === 'string') && (typeof targetContent === 'string'))  {
-    //   if (targetContent === '.') {
-    //     targetContent = '0.'
-    //   }
-    //   return;
-    // } else if ((valueArray.length === 1 && values.calculated) && (typeof targetContent === 'number' || targetContent === '.')) {
-    //   valueArray = [];
-    //   if (targetContent === '.') {
-    //     targetContent = '0.'
-    //   }
-    // } else {
-    //   if ((typeof valueArray[valueArray.length - 1] !== 'number') && targetContent === '.') {
-    //     targetContent = '0.'
-    //   }
-    // }
-    valueArray.push(targetContent);
-    setShowOnDisplay({showOnDisplay: numbers.numbersArr.join('') || targetContent});
+    if (displayArray.length <= 11) {
+      valueArray.push(targetContent);
+      displayArray.push(targetContent);
+    }
+  
+    if (displayArray[displayArray.length - 1] !== '.' && displayArray[displayArray.length - 1] !== '0.' && typeof displayArray[displayArray.length - 1] !== 'number' ) {
+      displayArray = [];
+    }
+
+    console.log(displayArray[displayArray.length - 1]);
+    console.log('valueArray ', valueArray)
+    console.log('displayArray ', displayArray)
+    setShowOnDisplay({showOnDisplay: displayArray.join('') || targetContent});
     setNumbersArr({numbersArr: valueArray});
-    // setCalculated({calculated: false})
   }
 
   const getNumbers = (value) => {

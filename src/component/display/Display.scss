@@ -18,9 +18,9 @@
   box-shadow: inset 0 0 10px 0 black;
   &-numbers {
     outline: 2px solid red;
-
+    width: 350px;
     margin: 0 20px;
-    overflow-x: hidden;
+    // overflow-x: hidden;
 
   }
   &--on {
