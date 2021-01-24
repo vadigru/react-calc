@@ -57,50 +57,57 @@ const Calculator = () => {
     }
   }
 
+  const handleResult = (res) => {
+    const resArr = res.toString().split('');
+    valueArray = [];
+    displayArray = [];
+    resArr.slice(0, 11).forEach((item) => {
+      if (typeof parseInt(item) === 'number' && !isNaN(item)) {
+        valueArray.push(parseInt(item));
+        displayArray.push(parseInt(item));
+      } else {
+        valueArray.push(item);
+        displayArray.push(item);
+      }
+    })
+
+    const resToDisplay = displayArray.join('');
+    setShowOnDisplay({showOnDisplay: resToDisplay});
+    setNumbersArr({numbersArr: valueArray});
+  }
+  
   const getSquare = () => {
     const num = eval(numbers.numbersArr.join(''));
     if (num <= 0) {
       return;
     }
     const res = Math.sqrt(num);
-    const resArr = res.toString().split('');
-    valueArray = [];
-    displayArray = [];
-    resArr.slice(0, 12).forEach((item) => {
-      if (typeof parseInt(item) === 'number' && !isNaN(item)) {
-        valueArray.push(parseInt(item));
-        displayArray.push(parseInt(item));
-      } else {
-        valueArray.push(item);
-        displayArray.push(item);
-      }
-    })
-    const resToDisplay = displayArray.join('');
-    setShowOnDisplay({showOnDisplay: resToDisplay});
+    handleResult(res);
+  }
+
+  const changeSign = () => {
+    if (numbers.numbersArr.length === 0 || numbers.numbersArr[0] === 0) {
+      return;
+    }
+    if (typeof numbers.numbersArr[0] === 'number' || numbers.numbersArr[0] === '0.') {
+      valueArray.unshift('-');
+      displayArray.unshift('-');
+    } else {
+      valueArray.shift();
+      displayArray.shift();
+    }
+    setShowOnDisplay({showOnDisplay: displayArray.join('')});
     setNumbersArr({numbersArr: valueArray});
   }
 
   const calculate = () => {
-    const res = eval(numbers.numbersArr.join(''));
-    const resArr = res.toString().split('');
-    valueArray = [];
-    displayArray = [];
-    resArr.forEach((item) => {
-      if (typeof parseInt(item) === 'number' && !isNaN(item)) {
-        valueArray.push(parseInt(item));
-        displayArray.push(parseInt(item));
-      } else {
-        valueArray.push(item);
-        displayArray.push(item);
-      }
-    })
-    const resToDisplay = displayArray.join('');
-    setShowOnDisplay({showOnDisplay: resToDisplay});
-    setNumbersArr({numbersArr: valueArray});
-    console.log(!displayArray.includes('.'));
+    let res = eval(numbers.numbersArr.join(''));
+    if (res === 0.30000000000000004) {
+      res = 0.3;
+    }
+    handleResult(res);
     if (displayArray.includes('.')) {
       setDecimal({dot: true});
-      console.log(decimal);
     } else {
       setDecimal({dot: false});
     }
@@ -114,15 +121,27 @@ const Calculator = () => {
   }
 
   const handlePressedButtons = (targetContent) => {
+    if (valueArray.length === 1 && valueArray[0] === 0) {
+      valueArray = [];
+      displayArray = [];
+      setShowOnDisplay({showOnDisplay: '0'})
+    }
+
     if ((targetContent === '+'
       || targetContent === '-'
       || targetContent === '*'
       || targetContent === '/')) {
-      if ((numbers.numbersArr.length === 0 || typeof valueArray[valueArray.length - 1] === 'string')
-      && (targetContent === '+' || targetContent === '*' || targetContent === '/')) {
+      if ((numbers.numbersArr.length === 0
+        || typeof valueArray[valueArray.length - 1] === 'string')
+        &&
+        (targetContent === '+'
+        || targetContent === '-'
+        || targetContent === '*'
+        || targetContent === '/')) {
         return;
       }
-      if (targetContent === '-' && typeof valueArray[valueArray.length - 1] === 'string') {
+      if (targetContent === '-'
+        && typeof valueArray[valueArray.length - 1] === 'string') {
         return;
       }
       displayArray = [];
@@ -137,11 +156,11 @@ const Calculator = () => {
     }
 
     if (targetContent === '.') {
-      console.log(decimal);
       if (decimal.dot === true) {
         return;
       }
-      if (numbers.numbersArr.length === 0 || typeof valueArray[valueArray.length - 1] === 'string') {
+      if (displayArray.length === 0 || (displayArray.length === 1
+        && displayArray[displayArray.length - 1] === 0)) {
         targetContent = '0.'
       }
       setDecimal({dot: true});
@@ -149,16 +168,17 @@ const Calculator = () => {
 
     if (displayArray.length <= 11) {
       valueArray.push(targetContent);
+      console.log('valueArray ', valueArray);
+      console.log('displayArray ', displayArray);
       displayArray.push(targetContent);
     }
   
-    if (displayArray[displayArray.length - 1] !== '.' && displayArray[displayArray.length - 1] !== '0.' && typeof displayArray[displayArray.length - 1] !== 'number' ) {
+    if (displayArray[displayArray.length - 1] !== '.'
+      && displayArray[displayArray.length - 1] !== '0.'
+      && typeof displayArray[displayArray.length - 1] !== 'number' ) {
       displayArray = [];
     }
 
-    console.log(displayArray[displayArray.length - 1]);
-    console.log('valueArray ', valueArray)
-    console.log('displayArray ', displayArray)
     setShowOnDisplay({showOnDisplay: displayArray.join('') || targetContent});
     setNumbersArr({numbersArr: valueArray});
   }
@@ -178,6 +198,9 @@ const Calculator = () => {
         break;
       case targetContent === '√':
         getSquare();
+        break;
+      case targetContent === '-/+':
+        changeSign();
         break;
       case targetContent === '=':
         getResult();
