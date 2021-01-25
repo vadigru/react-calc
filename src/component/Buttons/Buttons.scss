@@ -1,5 +1,5 @@
 .number-btns {
-  margin: 50px 50px;
+  margin: 0px 50px 0 50px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -24,6 +24,9 @@
   font-size: 25px;
   background-color: orange;
   color: #212121;
+  align-self: flex-start;
+  margin-left: 55px;
+  margin-right: 50px;
 }
 
 #clear {
@@ -32,4 +35,30 @@
   &:disabled {
     color: grey;
   }
+}
+.onoff-solar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  &_title {
+    width: 100%;
+    margin-right: 55px;
+    display: flex;
+    justify-content: flex-end;
+    border: 2px solid black;
+    border-radius: 5px;
+
+    & div {
+      width: 25%;
+      height: 70px;
+      background-color: darkslategrey;
+      border-right: 2px solid black;
+    }
+
+    & div:last-child {
+      border-right: none;
+    }
+  }
+
 }

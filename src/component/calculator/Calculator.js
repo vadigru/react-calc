@@ -12,6 +12,7 @@ const Calculator = () => {
   const [display, setShowOnDisplay] = useState({showOnDisplay: ''});
   const [numbers, setNumbersArr] = useState({numbersArr: []});
   const [decimal, setDecimal] = useState({dot: false});
+  const [scale, setScale] = useState({fontSize: 50});
 
   const toggleOnOff = () => {
       if (!onOff.isCalcOn) {
@@ -55,13 +56,20 @@ const Calculator = () => {
       setShowOnDisplay({showOnDisplay: '0'});
       setNumbersArr({numbersArr: valueArray});
     }
+    if (displayArray.length < 12) {
+      setScale({
+        fontSize: 50
+      })
+    }
+    console.log('valueArray ', valueArray);
+    console.log('displayArray ', displayArray);
   }
 
   const handleResult = (res) => {
     const resArr = res.toString().split('');
     valueArray = [];
     displayArray = [];
-    resArr.slice(0, 11).forEach((item) => {
+    resArr.slice(0, 12).forEach((item) => {
       if (typeof parseInt(item) === 'number' && !isNaN(item)) {
         valueArray.push(parseInt(item));
         displayArray.push(parseInt(item));
@@ -70,6 +78,11 @@ const Calculator = () => {
         displayArray.push(item);
       }
     })
+    if (displayArray.length > 11) {
+      setScale({
+        fontSize: 35
+      })
+    }
 
     const resToDisplay = displayArray.join('');
     setShowOnDisplay({showOnDisplay: resToDisplay});
@@ -77,6 +90,9 @@ const Calculator = () => {
   }
   
   const getSquare = () => {
+    if (typeof valueArray[valueArray.length - 1] === 'string') {
+      return;
+    }
     const num = eval(numbers.numbersArr.join(''));
     if (num <= 0) {
       return;
@@ -86,21 +102,29 @@ const Calculator = () => {
   }
 
   const changeSign = () => {
-    if (numbers.numbersArr.length === 0 || numbers.numbersArr[0] === 0) {
+    if (valueArray.length === 0 || valueArray[0] === 0) {
       return;
     }
-    if (typeof numbers.numbersArr[0] === 'number' || numbers.numbersArr[0] === '0.') {
-      valueArray.unshift('-');
+    if ((typeof valueArray[valueArray.length - 1] === 'number' || valueArray[0] === '0.') && (displayArray[0] !== '-')) {
+      valueArray.splice(valueArray.length - displayArray.length, 0, '-');
       displayArray.unshift('-');
+      console.log('111');
     } else {
-      valueArray.shift();
+      console.log('valueArray ', valueArray);
+      console.log('displayArray ', displayArray);
+      if (typeof valueArray[valueArray.length - 1] === 'string') {
+        return;
+      }
+      valueArray.splice(valueArray.length - displayArray.length, 1);
       displayArray.shift();
+      console.log('222');
     }
     setShowOnDisplay({showOnDisplay: displayArray.join('')});
     setNumbersArr({numbersArr: valueArray});
   }
 
   const calculate = () => {
+    console.log(numbers.numbersArr);
     let res = eval(numbers.numbersArr.join(''));
     if (res === 0.30000000000000004) {
       res = 0.3;
@@ -133,8 +157,7 @@ const Calculator = () => {
       || targetContent === '/')) {
       if ((numbers.numbersArr.length === 0
         || typeof valueArray[valueArray.length - 1] === 'string')
-        &&
-        (targetContent === '+'
+        && (targetContent === '+'
         || targetContent === '-'
         || targetContent === '*'
         || targetContent === '/')) {
@@ -144,7 +167,7 @@ const Calculator = () => {
         && typeof valueArray[valueArray.length - 1] === 'string') {
         return;
       }
-      displayArray = [];
+      // displayArray = [];
       if ((targetContent === '+'
         || targetContent === '-'
         || targetContent === '*'
@@ -166,17 +189,22 @@ const Calculator = () => {
       setDecimal({dot: true});
     }
 
-    if (displayArray.length <= 11) {
+    // if (displayArray.length < 15) {
       valueArray.push(targetContent);
-      console.log('valueArray ', valueArray);
-      console.log('displayArray ', displayArray);
       displayArray.push(targetContent);
-    }
+    // }
   
     if (displayArray[displayArray.length - 1] !== '.'
       && displayArray[displayArray.length - 1] !== '0.'
-      && typeof displayArray[displayArray.length - 1] !== 'number' ) {
+      && typeof displayArray[displayArray.length - 1] !== 'number'
+      && targetContent !== '-/+') {
       displayArray = [];
+    }
+
+    if (displayArray.length > 11) {
+      setScale({
+        fontSize: 35
+      })
     }
 
     setShowOnDisplay({showOnDisplay: displayArray.join('') || targetContent});
@@ -216,11 +244,15 @@ const Calculator = () => {
       <Display 
         showOnDisplay={display.showOnDisplay}
         isCalcOn={onOff.isCalcOn}
+        scale={scale.fontSize}
       />
       <Buttons 
         getNumbers={getNumbers}
         isCalcOn={onOff.isCalcOn}
       />
+      <div className="calculator_label">
+        <span className="calculator_model">BK201</span>
+      </div>
     </div>
   )
 };
