@@ -1,36 +1,36 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+
 import './Buttons.scss';
 
 const CALC_BTNS = [
-  // 'onoff',
-  'clear',
-  'delete',
-  'square',
-  'minusplus',
-  'seven',
-  'eight',
-  'nine',
-  'plus',
-  'four',
-  'five',
-  'six',
-  'minus',
-  'one',
-  'two',
-  'three',
-  'multiply',
-  'zero',
-  'dot',
-  'equal',
-  'divide',
+  `clear`,
+  `delete`,
+  `square`,
+  `minusplus`,
+  `seven`,
+  `eight`,
+  `nine`,
+  `plus`,
+  `four`,
+  `five`,
+  `six`,
+  `minus`,
+  `one`,
+  `two`,
+  `three`,
+  `multiply`,
+  `zero`,
+  `dot`,
+  `equal`,
+  `divide`,
 ];
 
 const ValuesMap = {
-  // 'onoff': 'on/off',
-  'clear': 'C',
-  'delete': '⇦',
-  'square': '√',
-  'minusplus': '-/+',
+  'clear': `C`,
+  'delete': `⇦`,
+  'square': `√`,
+  'minusplus': `-/+`,
   'zero': 0,
   'one': 1,
   'two': 2,
@@ -41,37 +41,39 @@ const ValuesMap = {
   'seven': 7,
   'eight': 8,
   'nine': 9,
-  'plus': '+',
-  'minus': '-',
-  'multiply': '*',
-  'dot': '.',
-  'equal': '=',
-  'divide': '/'
-}
+  'plus': `+`,
+  'minus': `-`,
+  'multiply': `*`,
+  'dot': `.`,
+  'equal': `=`,
+  'divide': `/`
+};
 
 const Buttons = (props) => {
-  const {getNumbers, isCalcOn} = props;
+  const {
+    isCalcOn,
+    getNumbers,
+  } = props;
 
   const setDisabled = (val) => {
-    if (val === 'on/off') {
+    if (val === `on/off`) {
       return false;
     } else {
       return !isCalcOn;
     }
-  }
+  };
 
-  return(
+  return (
     <>
       <div className="onoff-solar">
         <button
           className="number-btn onoff"
           id="onoff"
-          onClick={() => getNumbers('on/off')}
+          onClick={() => getNumbers(`on/off`)}
         >
           on/off
         </button>
         <div className="onoff-solar_title" >
-          {/* CALCULATOR */}
           <div></div>
           <div></div>
           <div></div>
@@ -79,17 +81,17 @@ const Buttons = (props) => {
         </div>
       </div>
       <div
-        className={'number-btns'}
+        className={`number-btns`}
       >
         {CALC_BTNS.map((btn, i) => {
-          return(
+          return (
             <button
               key={i}
               className={`number-btn ${CALC_BTNS[i]}`}
               id={CALC_BTNS[i]}
               onClick={() => getNumbers(ValuesMap[CALC_BTNS[i]])}
               disabled={setDisabled(ValuesMap[CALC_BTNS[i]])}
-              >{ValuesMap[CALC_BTNS[i]]}
+            >{ValuesMap[CALC_BTNS[i]]}
             </button>
           );
         })}
@@ -98,4 +100,8 @@ const Buttons = (props) => {
   );
 };
 
+Buttons.propTypes = {
+  isCalcOn: PropTypes.bool,
+  getNumbers: PropTypes.func,
+};
 export default Buttons;
