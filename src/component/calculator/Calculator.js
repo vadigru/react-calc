@@ -9,6 +9,7 @@ let displayArray = [];
 
 const Calculator = () => {
   const [onOff, setOnOff] = useState({isCalcOn: false});
+  const [result, setResult] = useState({isResultOn: false});
   const [display, setShowOnDisplay] = useState({showOnDisplay: ``});
   const [numbers, setNumbersArr] = useState({numbersArr: []});
   const [decimal, setDecimal] = useState({dot: false});
@@ -22,6 +23,8 @@ const Calculator = () => {
       setShowOnDisplay({showOnDisplay: `0`});
       setNumbersArr({numbersArr: valueArray});
       setDecimal({dot: false});
+      setScale({fontSize: 50});
+      setResult({isResultOn: false});
     } else {
       valueArray = [];
       displayArray = [];
@@ -29,6 +32,8 @@ const Calculator = () => {
       setShowOnDisplay({showOnDisplay: ``});
       setNumbersArr({numbersArr: valueArray});
       setDecimal({dot: false});
+      setScale({fontSize: 50});
+      setResult({isResultOn: false});
     }
   };
 
@@ -38,13 +43,15 @@ const Calculator = () => {
     setShowOnDisplay({showOnDisplay: `0`});
     setNumbersArr({numbersArr: valueArray});
     setDecimal({dot: false});
+    setScale({fontSize: 50});
+    setResult({isResultOn: false});
   };
 
   const deleteLastValue = () => {
     if (displayArray.length > 0) {
       const popped = valueArray.pop();
       displayArray.pop();
-      setShowOnDisplay({showOnDisplay: displayArray.join(``)});
+      setShowOnDisplay({showOnDisplay: valueArray.join(``)});
       setNumbersArr({numbersArr: valueArray});
       if (popped === `.`) {
         setDecimal({dot: false});
@@ -61,13 +68,17 @@ const Calculator = () => {
         fontSize: 50
       });
     }
+    setResult({isResultOn: false});
   };
 
   const handleResult = (res) => {
+    if (!Number.isInteger(res)) {
+      res = Math.round(res * 1000000) / 1000000;
+    }
     const resArr = res.toString().split(``);
     valueArray = [];
     displayArray = [];
-    resArr.slice(0, 12).forEach((item) => {
+    resArr.forEach((item) => {
       if (typeof parseInt(item, 10) === `number` && !isNaN(item)) {
         valueArray.push(parseInt(item, 10));
         displayArray.push(parseInt(item, 10));
@@ -82,8 +93,12 @@ const Calculator = () => {
       });
     }
 
-    const resToDisplay = displayArray.join(``);
-    setShowOnDisplay({showOnDisplay: resToDisplay});
+    if (displayArray.includes(`.`)) {
+      setDecimal({dot: true});
+    } else {
+      setDecimal({dot: false});
+    }
+    setShowOnDisplay({showOnDisplay: displayArray.join(``)});
     setNumbersArr({numbersArr: valueArray});
   };
 
@@ -91,12 +106,14 @@ const Calculator = () => {
     if (typeof valueArray[valueArray.length - 1] === `string`) {
       return;
     }
-    const num = eval(numbers.numbersArr.join(``));
+    const num = eval(valueArray.join(``));
+
     if (num <= 0) {
       return;
     }
     const res = Math.sqrt(num);
     handleResult(res);
+    setResult({isResultOn: true});
   };
 
   const changeSign = () => {
@@ -124,24 +141,22 @@ const Calculator = () => {
   };
 
   const calculate = () => {
-    let res = eval(numbers.numbersArr.join(``));
+    let res = eval(valueArray.join(``));
     if (res === 0.30000000000000004) {
       res = 0.3;
     }
     handleResult(res);
-    console.log(displayArray);
-    if (displayArray.includes(`.`)) {
-      setDecimal({dot: true});
-    } else {
-      setDecimal({dot: false});
-    }
   };
 
-  const getResult = () => {
+  const getResult = (targetContent) => {
     if (typeof valueArray[valueArray.length - 1] !== `number` && valueArray[valueArray.length - 1] !== `)`) {
       return;
     }
+    if (targetContent === `=`) {
+      setResult({isResultOn: true});
+    }
     calculate();
+
   };
 
   const handlePressedButtons = (targetContent) => {
@@ -155,31 +170,21 @@ const Calculator = () => {
       || targetContent === `-`
       || targetContent === `*`
       || targetContent === `/`)) {
-      if ((numbers.numbersArr.length === 0
-        || typeof valueArray[valueArray.length - 1] === `string`)
+      if ((valueArray.length === 0
+        || typeof valueArray[valueArray.length - 1] === `string`
+        && valueArray[valueArray.length - 1] !== `)`)
         && (targetContent === `+`
         || targetContent === `-`
         || targetContent === `*`
         || targetContent === `/`)) {
         return;
       }
-      // if (targetContent === `-`
-      //   && typeof valueArray[valueArray.length - 1] === `string`) {
-      //   return;
-      // }
-      displayArray = [];
       if ((targetContent === `+`
         || targetContent === `-`
         || targetContent === `*`
-        || targetContent === `/`)
-        && decimal.dot === true) {
-        setDecimal({dot: false});
+        || targetContent === `/`)) {
+        getResult();
       }
-      console.log(`valueArray `, valueArray);
-      console.log(`displayArray `, displayArray);
-      getResult();
-
-      // setShowOnDisplay({showOnDisplay: targetContent});
     }
 
     if (targetContent === `.`) {
@@ -190,14 +195,9 @@ const Calculator = () => {
         && displayArray[displayArray.length - 1] === 0)) {
         targetContent = `0.`;
       }
-      setDecimal({dot: true});
     }
-
-    if (displayArray.length < 15) {
-      valueArray.push(targetContent);
-      displayArray.push(targetContent);
-    }
-
+    valueArray.push(targetContent);
+    displayArray.push(targetContent);
     if (displayArray[displayArray.length - 1] !== `.`
       && displayArray[displayArray.length - 1] !== `0.`
       && typeof displayArray[displayArray.length - 1] !== `number`
@@ -211,7 +211,16 @@ const Calculator = () => {
       });
     }
 
-    setShowOnDisplay({showOnDisplay: valueArray.join(``)});
+    if (displayArray.includes(`.`)) {
+      setDecimal({dot: true});
+    } else {
+      setDecimal({dot: false});
+    }
+
+    if (result.isResultOn === true) {
+      setResult({isResultOn: false});
+    }
+    setShowOnDisplay({showOnDisplay: displayArray.join(``) || targetContent});
     setNumbersArr({numbersArr: valueArray});
   };
 
@@ -235,7 +244,7 @@ const Calculator = () => {
         changeSign();
         break;
       case targetContent === `=`:
-        getResult();
+        getResult(`=`);
         break;
       default:
         handlePressedButtons(targetContent);
@@ -246,9 +255,10 @@ const Calculator = () => {
   return (
     <div className={`calculator`}>
       <Display
-        showOnDisplay={display.showOnDisplay}
         isCalcOn={onOff.isCalcOn}
+        isResultOn={result.isResultOn}
         scale={scale.fontSize}
+        showOnDisplay={display.showOnDisplay}
       />
       <Buttons
         getNumbers={getNumbers}

@@ -6,6 +6,7 @@ import './Display.scss';
 const Display = (props) => {
   const {
     isCalcOn,
+    isResultOn,
     scale,
     showOnDisplay,
   } = props;
@@ -16,7 +17,8 @@ const Display = (props) => {
 
   return (
     <div className={`display display${isCalcOn ? `--on` : `--off`}`} style={style}>
-      <span className={`display-numbers`}>
+      <span className={`display__result display__result${isResultOn ? `--on` : `--off`}`}>result</span>
+      <span className={`display__numbers`}>
         {showOnDisplay}
       </span>
     </div>
@@ -25,6 +27,7 @@ const Display = (props) => {
 
 Display.propTypes = {
   isCalcOn: PropTypes.bool,
+  isResultOn: PropTypes.bool,
   scale: PropTypes.number,
   showOnDisplay: PropTypes.string,
 };
