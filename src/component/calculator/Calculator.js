@@ -10,6 +10,7 @@ let displayArray = [];
 const Calculator = () => {
   const [onOff, setOnOff] = useState({isCalcOn: false});
   const [result, setResult] = useState({isResultOn: false});
+  const [sqrtResult, setSqrtResult] = useState({isSqrtResultOn: false});
   const [display, setShowOnDisplay] = useState({showOnDisplay: ``});
   const [numbers, setNumbersArr] = useState({numbersArr: []});
   const [decimal, setDecimal] = useState({dot: false});
@@ -25,6 +26,7 @@ const Calculator = () => {
       setDecimal({dot: false});
       setScale({fontSize: 50});
       setResult({isResultOn: false});
+      setSqrtResult({isSqrtResultOn: false});
     } else {
       valueArray = [];
       displayArray = [];
@@ -34,6 +36,7 @@ const Calculator = () => {
       setDecimal({dot: false});
       setScale({fontSize: 50});
       setResult({isResultOn: false});
+      setSqrtResult({isSqrtResultOn: false});
     }
   };
 
@@ -45,6 +48,7 @@ const Calculator = () => {
     setDecimal({dot: false});
     setScale({fontSize: 50});
     setResult({isResultOn: false});
+    setSqrtResult({isSqrtResultOn: false});
   };
 
   const deleteLastValue = () => {
@@ -69,6 +73,7 @@ const Calculator = () => {
       });
     }
     setResult({isResultOn: false});
+    setSqrtResult({isSqrtResultOn: false});
   };
 
   const handleResult = (res) => {
@@ -108,12 +113,16 @@ const Calculator = () => {
     }
     const num = eval(valueArray.join(``));
 
-    if (num <= 0) {
+    if (num <= 0 || valueArray.length === 0) {
       return;
     }
     const res = Math.sqrt(num);
     handleResult(res);
-    setResult({isResultOn: true});
+    if (result.isResultOn === true) {
+      setResult({isResultOn: false});
+      // setSqrtResult({isSqrtResultOn: true});
+    }
+    setSqrtResult({isSqrtResultOn: true});
   };
 
   const changeSign = () => {
@@ -217,8 +226,9 @@ const Calculator = () => {
       setDecimal({dot: false});
     }
 
-    if (result.isResultOn === true) {
+    if (result.isResultOn === true || sqrtResult.isSqrtResultOn === true) {
       setResult({isResultOn: false});
+      setSqrtResult({isSqrtResultOn: false});
     }
     setShowOnDisplay({showOnDisplay: displayArray.join(``) || targetContent});
     setNumbersArr({numbersArr: valueArray});
@@ -238,7 +248,7 @@ const Calculator = () => {
         deleteLastValue();
         break;
       case targetContent === `√`:
-        getSquare();
+        getSquare(`√`);
         break;
       case targetContent === `-/+`:
         changeSign();
@@ -257,6 +267,7 @@ const Calculator = () => {
       <Display
         isCalcOn={onOff.isCalcOn}
         isResultOn={result.isResultOn}
+        isSqrtResultOn={sqrtResult.isSqrtResultOn}
         scale={scale.fontSize}
         showOnDisplay={display.showOnDisplay}
       />

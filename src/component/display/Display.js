@@ -7,6 +7,7 @@ const Display = (props) => {
   const {
     isCalcOn,
     isResultOn,
+    isSqrtResultOn,
     scale,
     showOnDisplay,
   } = props;
@@ -17,7 +18,8 @@ const Display = (props) => {
 
   return (
     <div className={`display display${isCalcOn ? `--on` : `--off`}`} style={style}>
-      <span className={`display__result display__result${isResultOn ? `--on` : `--off`}`}>result</span>
+      <span className={`display__result display__result${isResultOn ? `--on` : `--off`}`}>RES</span>
+      <span className={`display__result-sqrt display__result-sqrt${isSqrtResultOn ? `--on` : `--off`}`}>SQRT</span>
       <span className={`display__numbers`}>
         {showOnDisplay}
       </span>
@@ -28,6 +30,7 @@ const Display = (props) => {
 Display.propTypes = {
   isCalcOn: PropTypes.bool,
   isResultOn: PropTypes.bool,
+  isSqrtResultOn: PropTypes.bool,
   scale: PropTypes.number,
   showOnDisplay: PropTypes.string,
 };
