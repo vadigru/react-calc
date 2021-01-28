@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './Display.scss';
+import './display.scss';
 
 const Display = (props) => {
   const {
@@ -17,10 +17,10 @@ const Display = (props) => {
   };
 
   return (
-    <div className={`display display${isCalcOn ? `--on` : `--off`}`} style={style}>
+    <div className={`display display${isCalcOn ? `--on` : `--off`}`}>
       <span className={`display__result display__result${isResultOn ? `--on` : `--off`}`}>RES</span>
       <span className={`display__result-sqrt display__result-sqrt${isSqrtResultOn ? `--on` : `--off`}`}>SQRT</span>
-      <span className={`display__numbers`}>
+      <span className={`display__numbers`} style={style}>
         {showOnDisplay}
       </span>
     </div>
@@ -32,7 +32,7 @@ Display.propTypes = {
   isResultOn: PropTypes.bool,
   isSqrtResultOn: PropTypes.bool,
   scale: PropTypes.number,
-  showOnDisplay: PropTypes.string,
+  showOnDisplay: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 export default Display;

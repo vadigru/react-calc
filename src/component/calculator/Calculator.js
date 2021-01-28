@@ -1,38 +1,43 @@
-import React, {useState} from 'react';
-import Display from '../display/Display';
-import Buttons from '../Buttons/Buttons';
+import React, {useEffect, useState} from 'react';
+import Display from '../display/display';
+import Buttons from '../buttons/buttons';
 
-import './Calculator.scss';
+import './calculator.scss';
 
-let valueArray = [];
-let displayArray = [];
+const valueArray = [];
+const displayArray = [];
 
 const Calculator = () => {
+  const [decimal, setDecimal] = useState({dot: false});
+  const [display, setShowOnDisplay] = useState({showOnDisplay: `0`});
   const [onOff, setOnOff] = useState({isCalcOn: false});
   const [result, setResult] = useState({isResultOn: false});
-  const [sqrtResult, setSqrtResult] = useState({isSqrtResultOn: false});
-  const [display, setShowOnDisplay] = useState({showOnDisplay: ``});
-  const [numbers, setNumbersArr] = useState({numbersArr: []});
-  const [decimal, setDecimal] = useState({dot: false});
   const [scale, setScale] = useState({fontSize: 50});
+  const [sqrtResult, setSqrtResult] = useState({isSqrtResultOn: false});
+
+  useEffect(() => {
+    console.log(`%va`, valueArray, `%`, `&da`, displayArray, `&`);
+  });
+
+  const clearArrays = (...args) => {
+    args.forEach((arr) => {
+      arr.length = 0;
+    });
+  };
 
   const toggleOnOff = () => {
     if (!onOff.isCalcOn) {
-      valueArray = [];
-      displayArray = [];
+      clearArrays(valueArray, displayArray);
       setOnOff({isCalcOn: true});
       setShowOnDisplay({showOnDisplay: `0`});
-      setNumbersArr({numbersArr: valueArray});
       setDecimal({dot: false});
       setScale({fontSize: 50});
       setResult({isResultOn: false});
       setSqrtResult({isSqrtResultOn: false});
     } else {
-      valueArray = [];
-      displayArray = [];
+      clearArrays(valueArray, displayArray);
       setOnOff({isCalcOn: false});
-      setShowOnDisplay({showOnDisplay: ``});
-      setNumbersArr({numbersArr: valueArray});
+      setShowOnDisplay({showOnDisplay: `0`});
       setDecimal({dot: false});
       setScale({fontSize: 50});
       setResult({isResultOn: false});
@@ -41,10 +46,8 @@ const Calculator = () => {
   };
 
   const clearDisplay = () => {
-    valueArray = [];
-    displayArray = [];
+    clearArrays(valueArray, displayArray);
     setShowOnDisplay({showOnDisplay: `0`});
-    setNumbersArr({numbersArr: valueArray});
     setDecimal({dot: false});
     setScale({fontSize: 50});
     setResult({isResultOn: false});
@@ -55,17 +58,14 @@ const Calculator = () => {
     if (displayArray.length > 0) {
       const popped = valueArray.pop();
       displayArray.pop();
-      setShowOnDisplay({showOnDisplay: valueArray.join(``)});
-      setNumbersArr({numbersArr: valueArray});
+      setShowOnDisplay({showOnDisplay: displayArray.join(``)});
       if (popped === `.`) {
         setDecimal({dot: false});
       }
     }
     if (displayArray.length === 0) {
-      valueArray = [];
-      displayArray = [];
+      clearArrays(valueArray, displayArray);
       setShowOnDisplay({showOnDisplay: `0`});
-      setNumbersArr({numbersArr: valueArray});
     }
     if (displayArray.length < 12) {
       setScale({
@@ -81,8 +81,7 @@ const Calculator = () => {
       res = Math.round(res * 1000000) / 1000000;
     }
     const resArr = res.toString().split(``);
-    valueArray = [];
-    displayArray = [];
+    clearArrays(valueArray, displayArray);
     resArr.forEach((item) => {
       if (typeof parseInt(item, 10) === `number` && !isNaN(item)) {
         valueArray.push(parseInt(item, 10));
@@ -93,18 +92,16 @@ const Calculator = () => {
       }
     });
     if (displayArray.length > 11) {
-      setScale({
-        fontSize: 35
-      });
+      setScale({fontSize: 35});
+    } else {
+      setScale({fontSize: 50});
     }
-
     if (displayArray.includes(`.`)) {
       setDecimal({dot: true});
     } else {
       setDecimal({dot: false});
     }
     setShowOnDisplay({showOnDisplay: displayArray.join(``)});
-    setNumbersArr({numbersArr: valueArray});
   };
 
   const getSquare = () => {
@@ -120,7 +117,6 @@ const Calculator = () => {
     handleResult(res);
     if (result.isResultOn === true) {
       setResult({isResultOn: false});
-      // setSqrtResult({isSqrtResultOn: true});
     }
     setSqrtResult({isSqrtResultOn: true});
   };
@@ -146,7 +142,6 @@ const Calculator = () => {
       displayArray.shift();
     }
     setShowOnDisplay({showOnDisplay: displayArray.join(``)});
-    setNumbersArr({numbersArr: valueArray});
   };
 
   const calculate = () => {
@@ -169,12 +164,6 @@ const Calculator = () => {
   };
 
   const handlePressedButtons = (targetContent) => {
-    if (valueArray.length === 1 && valueArray[0] === 0) {
-      valueArray = [];
-      displayArray = [];
-      setShowOnDisplay({showOnDisplay: `0`});
-    }
-
     if ((targetContent === `+`
       || targetContent === `-`
       || targetContent === `*`
@@ -189,10 +178,12 @@ const Calculator = () => {
         return;
       }
       if ((targetContent === `+`
-        || targetContent === `-`
-        || targetContent === `*`
-        || targetContent === `/`)) {
+          || targetContent === `-`
+          || targetContent === `*`
+          || targetContent === `/`)) {
         getResult();
+        setScale({fontSize: 50});
+        setDecimal({dot: false});
       }
     }
 
@@ -200,18 +191,21 @@ const Calculator = () => {
       if (decimal.dot === true) {
         return;
       }
+      setDecimal({dot: true});
       if (displayArray.length === 0 || (displayArray.length === 1
         && displayArray[displayArray.length - 1] === 0)) {
         targetContent = `0.`;
       }
     }
+
     valueArray.push(targetContent);
     displayArray.push(targetContent);
+
     if (displayArray[displayArray.length - 1] !== `.`
       && displayArray[displayArray.length - 1] !== `0.`
       && typeof displayArray[displayArray.length - 1] !== `number`
       && targetContent !== `-/+`) {
-      displayArray = [];
+      clearArrays(displayArray);
     }
 
     if (displayArray.length > 11) {
@@ -220,18 +214,11 @@ const Calculator = () => {
       });
     }
 
-    if (displayArray.includes(`.`)) {
-      setDecimal({dot: true});
-    } else {
-      setDecimal({dot: false});
-    }
-
     if (result.isResultOn === true || sqrtResult.isSqrtResultOn === true) {
       setResult({isResultOn: false});
       setSqrtResult({isSqrtResultOn: false});
     }
     setShowOnDisplay({showOnDisplay: displayArray.join(``) || targetContent});
-    setNumbersArr({numbersArr: valueArray});
   };
 
   const getNumbers = (value) => {

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import './Buttons.scss';
+import './buttons.scss';
 
 const CALC_BTNS = [
   `clear`,

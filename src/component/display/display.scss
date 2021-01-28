@@ -17,10 +17,12 @@
     background-color: lightgreen;
   }
   &--off {
+    color: silver;
     background-color: lightgrey;
   }
   &__numbers {
     width: 100%;
+    height: 55px;
     margin: 0 20px;
     display: flex;
     justify-content: flex-end;
@@ -37,8 +39,8 @@
     border-radius: 2px;
     &--off {
       color: lightgrey;
-      background-color: silver;
-      opacity: 0.5;
+      background-color: dimgray;
+      opacity: 0.1;
     }
     &--on {
       color: lightgreen;
@@ -57,8 +59,8 @@
     border-radius: 2px;
     &--off {
       color: lightgrey;
-      background-color: silver;
-      opacity: 0.5;
+      background-color: dimgray;
+      opacity: 0.1;
     }
     &--on {
       color: lightgreen;
