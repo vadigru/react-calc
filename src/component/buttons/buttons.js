@@ -71,7 +71,7 @@ const Buttons = (props) => {
           id="onoff"
           onClick={() => getNumbers(`on/off`)}
         >
-          on/off
+          {isCalcOn ? `ON` : `OFF`}
         </button>
         <div className="onoff-solar_title" >
           <div></div>

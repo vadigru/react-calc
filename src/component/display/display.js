@@ -6,10 +6,12 @@ import './display.scss';
 const Display = (props) => {
   const {
     isCalcOn,
-    isResultOn,
-    isSqrtResultOn,
+    isResult,
+    isSqrtResult,
+    isError,
     scale,
     showOnDisplay,
+    total
   } = props;
 
   const style = {
@@ -18,8 +20,10 @@ const Display = (props) => {
 
   return (
     <div className={`display display${isCalcOn ? `--on` : `--off`}`}>
-      <span className={`display__result display__result${isResultOn ? `--on` : `--off`}`}>RES</span>
-      <span className={`display__result-sqrt display__result-sqrt${isSqrtResultOn ? `--on` : `--off`}`}>SQRT</span>
+      <span className={`display__result display__result${isResult ? `--on` : `--off`}`}>RES</span>
+      <span className={`display__result-sqrt display__result-sqrt${isSqrtResult ? `--on` : `--off`}`}>SQRT</span>
+      <span className={`display__result-error display__result-error${isError ? `--on` : `--off`}`}>ERR</span>
+      <span className={`display__result-total display__result-total${isCalcOn ? `--on` : `--off`}`}>{total}</span>
       <span className={`display__numbers`} style={style}>
         {showOnDisplay}
       </span>
@@ -29,10 +33,12 @@ const Display = (props) => {
 
 Display.propTypes = {
   isCalcOn: PropTypes.bool,
-  isResultOn: PropTypes.bool,
-  isSqrtResultOn: PropTypes.bool,
+  isResult: PropTypes.bool,
+  isSqrtResult: PropTypes.bool,
+  isError: PropTypes.bool,
   scale: PropTypes.number,
   showOnDisplay: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  total: PropTypes.string
 };
 
 export default Display;
