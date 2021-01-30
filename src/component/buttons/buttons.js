@@ -43,10 +43,10 @@ const ValuesMap = {
   'nine': 9,
   'plus': `+`,
   'minus': `-`,
-  'multiply': `*`,
-  'dot': `.`,
+  'multiply': `×`,
+  'dot': `·`,
   'equal': `=`,
-  'divide': `/`
+  'divide': `÷`
 };
 
 const Buttons = (props) => {
@@ -67,7 +67,7 @@ const Buttons = (props) => {
     <>
       <div className="onoff-solar">
         <button
-          className="number-btn onoff"
+          className="onoff"
           id="onoff"
           onClick={() => getNumbers(`on/off`)}
         >

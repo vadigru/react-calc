@@ -16,6 +16,11 @@ const Calculator = () => {
   const [total, setTotal] = useState(`0`);
   const [valueArray, setValueArray] = useState([]);
 
+  useEffect(() => {
+    console.log(`valueArray `, valueArray);
+    console.log(`displayArray `, displayArray);
+  });
+
   const clearArrays = (...args) => {
     args.forEach((arr) => {
       arr.length = 0;
@@ -131,6 +136,7 @@ const Calculator = () => {
 
   const changeSign = () => {
     if (valueArray.length === 0 || valueArray[0] === 0) {
+      setError(true);
       return;
     }
     if ((typeof valueArray[valueArray.length - 1] === `number` || valueArray[0] === `0.` || valueArray[valueArray.length - 1] === `.`) && (displayArray[0] !== `-`)) {
@@ -143,7 +149,9 @@ const Calculator = () => {
         displayArray.unshift(`-`);
       }
     } else {
-      if (typeof valueArray[valueArray.length - 1] === `string` && valueArray[valueArray.length - 1] !== `.`) {
+      if (typeof valueArray[valueArray.length - 1] !== `number`
+        && valueArray[valueArray.length - 1] !== `.`
+        && valueArray[valueArray.length - 1] !== `)`) {
         return;
       }
       valueArray.splice(valueArray.length - displayArray.length, 1);
@@ -163,6 +171,7 @@ const Calculator = () => {
 
   const getResult = (targetContent) => {
     if (typeof valueArray[valueArray.length - 1] !== `number` && valueArray[valueArray.length - 1] !== `)`) {
+      setError(true);
       return;
     }
     if (targetContent === `=`) {
@@ -172,9 +181,13 @@ const Calculator = () => {
   };
 
   const handlePressedButtons = (targetContent) => {
+    if (targetContent === `·`) {
+      targetContent = `.`;
+    }
+
     if ((targetContent === `+`
       || targetContent === `-`
-      || targetContent === `*`
+      || targetContent === `×`
       || targetContent === `/`)) {
       if ((valueArray.length === 0
         || typeof valueArray[valueArray.length - 1] === `string`
@@ -182,13 +195,13 @@ const Calculator = () => {
         && valueArray[valueArray.length - 1] !== `.`)
         && (targetContent === `+`
         || targetContent === `-`
-        || targetContent === `*`
+        || targetContent === `×`
         || targetContent === `/`)) {
         return;
       }
       if ((targetContent === `+`
           || targetContent === `-`
-          || targetContent === `*`
+          || targetContent === `×`
           || targetContent === `/`)) {
         getResult();
         setScale(50);
@@ -208,7 +221,11 @@ const Calculator = () => {
       }
     }
 
+    targetContent = targetContent === `×` ? targetContent = `*` : targetContent = targetContent;
+    targetContent = targetContent === `÷` ? targetContent = `/` : targetContent = targetContent;
     valueArray.push(targetContent);
+    targetContent = targetContent === `*` ? targetContent = `×` : targetContent = targetContent;
+    targetContent = targetContent === `/` ? targetContent = `÷` : targetContent = targetContent;
     displayArray.push(targetContent);
 
     if (displayArray[displayArray.length - 1] !== `.`
@@ -216,6 +233,7 @@ const Calculator = () => {
       && typeof displayArray[displayArray.length - 1] !== `number`
       && targetContent !== `-/+`) {
       clearArrays(displayArray);
+      setDisplayArray([targetContent]);
     }
 
     if (displayArray.length > 11) {
