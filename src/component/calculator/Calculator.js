@@ -241,7 +241,6 @@ const Calculator = () => {
       && typeof displayArray[displayArray.length - 1] !== `number`
       && targetContent !== `-/+`) {
       clearArrays(displayArray);
-      setDisplayArray([targetContent]);
     }
 
     if (displayArray.length > 11) {
