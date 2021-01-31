@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Display from '../display/display';
 import Buttons from '../buttons/buttons';
 
@@ -6,6 +6,7 @@ import './calculator.scss';
 
 const Calculator = () => {
   const initFontSize = window.innerWidth < 400 ? 40 : 55;
+
   const [decimal, setDecimal] = useState(false);
   const [display, setDisplay] = useState(`0`);
   const [displayArray, setDisplayArray] = useState([]);
@@ -14,13 +15,11 @@ const Calculator = () => {
   const [result, setResult] = useState(false);
   const [scale, setScale] = useState(initFontSize);
   const [sqrtResult, setSqrtResult] = useState(false);
-  const [total, setTotal] = useState(`0`);
+  const [total, setTotal] = useState(`--`);
   const [valueArray, setValueArray] = useState([]);
 
-  useEffect(() => {
-    console.log(`valueArray `, valueArray);
-    console.log(`displayArray `, displayArray);
-  });
+  const lastValue = valueArray[valueArray.length - 1];
+  const beforeValue = valueArray.length - displayArray.length;
 
   const clearArrays = (...args) => {
     args.forEach((arr) => {
@@ -39,7 +38,7 @@ const Calculator = () => {
       setScale(initFontSize);
       setResult(false);
       setSqrtResult(false);
-      setTotal(`0`);
+      setTotal(`--`);
     } else {
       setOnOff(false);
       setDisplay(`0`);
@@ -50,7 +49,7 @@ const Calculator = () => {
       setScale(initFontSize);
       setResult(false);
       setSqrtResult(false);
-      setTotal(`0`);
+      setTotal(`--`);
     }
   };
 
@@ -63,7 +62,7 @@ const Calculator = () => {
     setScale(initFontSize);
     setResult(false);
     setSqrtResult(false);
-    setTotal(`0`);
+    setTotal(`--`);
   };
 
   const deleteLastValue = () => {
@@ -76,7 +75,7 @@ const Calculator = () => {
       }
     }
     if (displayArray.length === 0) {
-      setDisplay(valueArray[valueArray.length - 1]);
+      setDisplay(lastValue);
     }
     if (displayArray.length < 12) {
       setScale(initFontSize);
@@ -86,7 +85,8 @@ const Calculator = () => {
     setSqrtResult(false);
   };
 
-  const handleResult = (res) => {
+  // result calculation start -------------------------------------------------
+  const handleResult = (res, btnValue) => {
     if (!Number.isInteger(res)) {
       res = Math.round(res * 1000000) / 1000000;
     }
@@ -118,22 +118,43 @@ const Calculator = () => {
       setDisplay(``);
     }
     setDisplay(displayArray.join(``));
-    setTotal(valueArray.join(``));
+    setTotal(btnValue === `=` || btnValue === `√` ? `--` : valueArray.join(``));
   };
 
-  const getSquare = () => {
-    if (typeof valueArray[valueArray.length - 1] === `string` && valueArray[valueArray.length - 1] !== `.`) {
+  const calculate = (btnValue) => {
+    let res = eval(valueArray.join(``)); // eslint-disable-line no-eval
+    if (res === 0.30000000000000004) {
+      res = 0.3;
+    }
+    handleResult(res, btnValue);
+  };
+
+  const getResult = (btnValue) => {
+    if (typeof lastValue !== `number` && lastValue !== `)`) {
       setError(true);
       return;
     }
-    const num = eval(valueArray.join(``));
+    if (btnValue === `=`) {
+      setResult(true);
+    }
+    calculate(btnValue);
+  };
+  // result calulation end ----------------------------------------------------
+
+  const getSquare = (btnValue) => {
+    if (typeof lastValue === `string` && lastValue !== `.`) {
+      setError(true);
+      return;
+    }
+
+    const num = eval(valueArray.join(``)); // eslint-disable-line no-eval
 
     if (num <= 0 || valueArray.length === 0) {
       setError(true);
       return;
     }
     const res = Math.sqrt(num);
-    handleResult(res);
+    handleResult(res, btnValue);
     if (result === true) {
       setResult(false);
     }
@@ -146,100 +167,89 @@ const Calculator = () => {
       setError(true);
       return;
     }
-    if ((typeof valueArray[valueArray.length - 1] === `number` || valueArray[0] === `0.` || valueArray[valueArray.length - 1] === `.`) && (displayArray[0] !== `-`)) {
+    if ((typeof lastValue === `number` ||
+                valueArray[0] === `0.` ||
+                lastValue === `.`) &&
+                (displayArray[0] !== `-`)) {
       if (typeof valueArray[valueArray.length - (displayArray.length + 1)] === `string`) {
-        valueArray.splice(valueArray.length - displayArray.length, 0, `(-`);
+        valueArray.splice(beforeValue, 0, `(-`);
         valueArray.splice(valueArray.length, 0, `)`);
         displayArray.unshift(`-`);
       } else {
-        valueArray.splice(valueArray.length - displayArray.length, 0, `-`);
+        valueArray.splice(beforeValue, 0, `-`);
         displayArray.unshift(`-`);
       }
     } else {
-      if (typeof valueArray[valueArray.length - 1] !== `number`
-        && valueArray[valueArray.length - 1] !== `.`
-        && valueArray[valueArray.length - 1] !== `)`) {
+      if (typeof lastValue !== `number` &&
+                 lastValue !== `.` &&
+                 lastValue !== `)`) {
         return;
       }
-      valueArray.splice(valueArray.length - displayArray.length, 1);
+      valueArray.splice(beforeValue, 1);
       displayArray.shift();
     }
     setError(false);
     setDisplay(displayArray.join(``));
   };
 
-  const calculate = () => {
-    let res = eval(valueArray.join(``));
-    if (res === 0.30000000000000004) {
-      res = 0.3;
-    }
-    handleResult(res);
-  };
-
-  const getResult = (targetContent) => {
-    if (typeof valueArray[valueArray.length - 1] !== `number` && valueArray[valueArray.length - 1] !== `)`) {
-      setError(true);
-      return;
-    }
-    if (targetContent === `=`) {
-      setResult(true);
-    }
-    calculate();
-  };
-
-  const handlePressedButtons = (targetContent) => {
-
-    if (targetContent === `·`) {
-      targetContent = `.`;
+  const handlePressedButtons = (btnValue) => {
+    if (btnValue === `·`) {
+      btnValue = `.`;
     }
 
-    if ((targetContent === `+`
-      || targetContent === `-`
-      || targetContent === `×`
-      || targetContent === `/`)) {
-      if ((valueArray.length === 0
-        || typeof valueArray[valueArray.length - 1] === `string`
-        && valueArray[valueArray.length - 1] !== `)`
-        && valueArray[valueArray.length - 1] !== `.`)
-        && (targetContent === `+`
-        || targetContent === `-`
-        || targetContent === `×`
-        || targetContent === `/`)) {
+    if ((btnValue === `+` ||
+         btnValue === `-` ||
+         btnValue === `×` ||
+         btnValue === `/`)) {
+      if ((typeof lastValue === `string` &&
+                  valueArray.length === 0 ||
+                  lastValue !== `)` &&
+                  lastValue !== `.`) &&
+          (btnValue === `+` ||
+           btnValue === `-` ||
+           btnValue === `×` ||
+           btnValue === `/`)) {
         return;
       }
-      if ((targetContent === `+`
-          || targetContent === `-`
-          || targetContent === `×`
-          || targetContent === `/`)) {
+      if ((btnValue === `+` ||
+           btnValue === `-` ||
+           btnValue === `×` ||
+           btnValue === `/`)) {
         getResult();
         setScale(initFontSize);
         setDecimal(false);
       }
     }
 
-    if (targetContent === `.`) {
+    if (display === `0` && btnValue === 0) {
+      return;
+    }
+
+    if (btnValue === `.`) {
       if (decimal === true) {
         setError(true);
         return;
       }
       setDecimal(true);
-      if (displayArray.length === 0 || (displayArray.length === 1
-        && displayArray[displayArray.length - 1] === 0)) {
-        targetContent = `0.`;
+      if (displayArray.length === 0 ||
+         (displayArray.length === 1 && display === `0`)) {
+        btnValue = `0.`;
       }
     }
 
-    targetContent = targetContent === `×` ? targetContent = `*` : targetContent = targetContent;
-    targetContent = targetContent === `÷` ? targetContent = `/` : targetContent = targetContent;
-    valueArray.push(targetContent);
-    targetContent = targetContent === `*` ? targetContent = `×` : targetContent = targetContent;
-    targetContent = targetContent === `/` ? targetContent = `÷` : targetContent = targetContent;
-    displayArray.push(targetContent);
+    btnValue = btnValue === `×` ? btnValue = `*` : btnValue = btnValue;
+    btnValue = btnValue === `÷` ? btnValue = `/` : btnValue = btnValue;
+    valueArray.push(btnValue);
+    btnValue = btnValue === `*` ? btnValue = `×` : btnValue = btnValue;
+    btnValue = btnValue === `/` ? btnValue = `÷` : btnValue = btnValue;
+    displayArray.push(btnValue);
 
-    if (displayArray[displayArray.length - 1] !== `.`
-      && displayArray[displayArray.length - 1] !== `0.`
-      && typeof displayArray[displayArray.length - 1] !== `number`
-      && targetContent !== `-/+`) {
+    const lastDisplayValue = displayArray[displayArray.length - 1];
+
+    if (typeof lastDisplayValue !== `number` &&
+               lastDisplayValue !== `.` &&
+               lastDisplayValue !== `0.` &&
+               btnValue !== `-/+`) {
       clearArrays(displayArray);
     }
 
@@ -247,38 +257,40 @@ const Calculator = () => {
       setScale(35);
     }
 
-    if (result === true || sqrtResult === true || error === true) {
+    if (result === true ||
+        sqrtResult === true ||
+        error === true) {
       setResult(false);
       setSqrtResult(false);
       setError(false);
     }
-    setDisplay(displayArray.join(``) || targetContent);
+    setDisplay(displayArray.join(``) || btnValue);
   };
 
   const getNumbers = (value) => {
-    const targetContent = value;
+    const btnValue = value;
 
     switch (true) {
-      case targetContent === `on/off`:
+      case btnValue === `on/off`:
         toggleOnOff();
         break;
-      case targetContent === `C`:
+      case btnValue === `C`:
         clearDisplay();
         break;
-      case targetContent === `⇦`:
+      case btnValue === `⇦`:
         deleteLastValue();
         break;
-      case targetContent === `√`:
+      case btnValue === `√`:
         getSquare(`√`);
         break;
-      case targetContent === `-/+`:
+      case btnValue === `-/+`:
         changeSign();
         break;
-      case targetContent === `=`:
+      case btnValue === `=`:
         getResult(`=`);
         break;
       default:
-        handlePressedButtons(targetContent);
+        handlePressedButtons(btnValue);
         break;
     }
   };
