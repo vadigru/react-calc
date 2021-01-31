@@ -201,10 +201,10 @@ const Calculator = () => {
          btnValue === `-` ||
          btnValue === `×` ||
          btnValue === `/`)) {
-      if ((typeof lastValue === `string` &&
-                  valueArray.length === 0 ||
-                  lastValue !== `)` &&
-                  lastValue !== `.`) &&
+      if ((valueArray.length === 0 ||
+    typeof lastValue === `string` &&
+           lastValue !== `)` &&
+           lastValue !== `.`) &&
           (btnValue === `+` ||
            btnValue === `-` ||
            btnValue === `×` ||
