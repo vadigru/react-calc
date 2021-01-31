@@ -5,13 +5,14 @@ import Buttons from '../buttons/buttons';
 import './calculator.scss';
 
 const Calculator = () => {
+  const initFontSize = window.innerWidth < 400 ? 40 : 55;
   const [decimal, setDecimal] = useState(false);
   const [display, setDisplay] = useState(`0`);
   const [displayArray, setDisplayArray] = useState([]);
   const [error, setError] = useState(false);
   const [onOff, setOnOff] = useState(false);
   const [result, setResult] = useState(false);
-  const [scale, setScale] = useState(50);
+  const [scale, setScale] = useState(initFontSize);
   const [sqrtResult, setSqrtResult] = useState(false);
   const [total, setTotal] = useState(`0`);
   const [valueArray, setValueArray] = useState([]);
@@ -35,7 +36,7 @@ const Calculator = () => {
       setDisplayArray([]);
       setDecimal(false);
       setError(false);
-      setScale(50);
+      setScale(initFontSize);
       setResult(false);
       setSqrtResult(false);
       setTotal(`0`);
@@ -46,7 +47,7 @@ const Calculator = () => {
       setDisplayArray([]);
       setDecimal(false);
       setError(false);
-      setScale(50);
+      setScale(initFontSize);
       setResult(false);
       setSqrtResult(false);
       setTotal(`0`);
@@ -59,7 +60,7 @@ const Calculator = () => {
     setDisplayArray([]);
     setDecimal(false);
     setError(false);
-    setScale(50);
+    setScale(initFontSize);
     setResult(false);
     setSqrtResult(false);
     setTotal(`0`);
@@ -78,7 +79,7 @@ const Calculator = () => {
       setDisplay(valueArray[valueArray.length - 1]);
     }
     if (displayArray.length < 12) {
-      setScale(50);
+      setScale(initFontSize);
     }
     setError(false);
     setResult(false);
@@ -103,12 +104,18 @@ const Calculator = () => {
     if (displayArray.length > 11) {
       setScale(35);
     } else {
-      setScale(50);
+      setScale(initFontSize);
     }
     if (displayArray.includes(`.`)) {
       setDecimal(true);
     } else {
       setDecimal(false);
+    }
+
+    if (displayArray.join(``) === `0`) {
+      setValueArray([]);
+      setDisplayArray([]);
+      setDisplay(``);
     }
     setDisplay(displayArray.join(``));
     setTotal(valueArray.join(``));
@@ -181,6 +188,7 @@ const Calculator = () => {
   };
 
   const handlePressedButtons = (targetContent) => {
+
     if (targetContent === `·`) {
       targetContent = `.`;
     }
@@ -204,7 +212,7 @@ const Calculator = () => {
           || targetContent === `×`
           || targetContent === `/`)) {
         getResult();
-        setScale(50);
+        setScale(initFontSize);
         setDecimal(false);
       }
     }
@@ -245,7 +253,6 @@ const Calculator = () => {
       setSqrtResult(false);
       setError(false);
     }
-
     setDisplay(displayArray.join(``) || targetContent);
   };
 

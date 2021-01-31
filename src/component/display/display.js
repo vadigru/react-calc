@@ -20,10 +20,13 @@ const Display = (props) => {
 
   return (
     <div className={`display display${isCalcOn ? `--on` : `--off`}`}>
-      <span className={`display__result display__result${isResult ? `--on` : `--off`}`}>RES</span>
-      <span className={`display__result-sqrt display__result-sqrt${isSqrtResult ? `--on` : `--off`}`}>SQRT</span>
-      <span className={`display__result-error display__result-error${isError ? `--on` : `--off`}`}>ERR</span>
-      <span className={`display__result-total display__result-total${isCalcOn ? `--on` : `--off`}`}>{total}</span>
+      <ul className={`display__indicators indicators`}>
+        <li className={`indicators__item indicators__res indicators__item${isResult ? `--on` : `--off`}`}>RES</li>
+        <li className={`indicators__item indicators__sqrt indicators__item${isSqrtResult ? `--on` : `--off`}`}>SQRT</li>
+        <li className={`indicators__item indicators__err indicators__item${isError ? `--err-on` : `--err-off`}`}>ERR</li>
+        <li className={`indicators__item indicators__total indicators__item${isCalcOn ? `--total-on` : `--total-off`}`}>{total}</li>
+      </ul>
+
       <span className={`display__numbers`} style={style}>
         {showOnDisplay}
       </span>

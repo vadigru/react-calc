@@ -2,12 +2,12 @@
   font-family: 'Cutive Mono', monospace;
   color: dimgray;
   font-weight: 500;
-  width: 400px;
+  width: 85%;
   height: 100px;
-  margin: 25px;
+  margin: 5% 0;
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;
+  align-items: center;
   box-sizing: border-box;
   border: 2px solid black;
   border-radius: 10px;
@@ -22,90 +22,68 @@
   }
   &__numbers {
     width: 100%;
-    height: 55px;
-    margin: 0 20px 5px 20px;
+    margin: 7.5% 2% 0 2%;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    align-items: flex-start;
     overflow-x: hidden;
   }
-  &__result {
+}
+
+.indicators {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  &__item {
     font-size: 15px;
     font-weight: bold;
     padding: 1px 4px;
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 10%;
     border-radius: 2px;
+    &--on {
+      color: lightgreen;
+      background-color: dimgray;
+      opacity: 0.6;
+    }
     &--off {
       color: lightgrey;
       background-color: dimgray;
       opacity: 0.1;
     }
-    &--on {
-      color: lightgreen;
-      background-color: dimgray;
-      opacity: 0.6;
-    }
-  }
-
-  &__result-sqrt {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 1px 4px;
-    position: absolute;
-    top: 10px;
-    left: 50px;
-    border-radius: 2px;
-    &--off {
-      color: lightgrey;
-      background-color: dimgray;
-      opacity: 0.1;
-    }
-    &--on {
-      color: lightgreen;
-      background-color: dimgray;
-      opacity: 0.6;
-    }
-  }
-
-  &__result-total {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 1px 4px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border-radius: 2px;
-    &--off {
-      border: 2px solid dimgray;
-      color: dimgray;
-      opacity: 0.1;
-    }
-    &--on {
-      border: 2px solid dimgray;
-      color: dimgray;
-      opacity: 0.6;
-    }
-  }
-
-  &__result-error {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 1px 4px;
-    position: absolute;
-    top: 10px;
-    left: 100px;
-    border-radius: 2px;
-    &--off {
-      color: lightgreen;
-      background-color: dimgray;
-      opacity: 0.1;
-    }
-    &--on {
-      color: lightgreen;
+    &--err-on {
       background-color: tomato;
       opacity: 0.6;
     }
+    &--err-off {
+      background-color: dimgray;
+      opacity: 0.1;
+    }
+    &--total-on {
+      opacity: 0.6;
+    }
+    &--total-off {
+      opacity: 0.1;
+    }
+  }
+
+  &__res {
+    left: 15px;
+  }
+  &__sqrt {
+    left: 55px;
+  }
+  &__err {
+    left: 105px;
+    color: lightgreen;
+  }
+  &__total {
+    right: 15px;
+    color: dimgray;
+    border: 2px solid dimgray;
   }
 }
