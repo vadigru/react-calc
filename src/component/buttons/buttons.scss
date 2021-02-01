@@ -40,6 +40,7 @@
     color: grey;
   }
 }
+
 .onoff-solar {
   width: 100%;
   display: flex;
@@ -68,4 +69,18 @@
       border-right: none;
     }
   }
+}
+
+.equal {
+  background-color: royalblue;
+}
+
+.delete,
+.square,
+.minusplus,
+.plus,
+.minus,
+.multiply,
+.divide {
+  background-color: lightslategrey;
 }
