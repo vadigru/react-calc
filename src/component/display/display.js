@@ -5,6 +5,7 @@ import './display.scss';
 
 const Display = (props) => {
   const {
+    displayColor,
     isCalcOn,
     isResult,
     isSqrtResult,
@@ -14,12 +15,16 @@ const Display = (props) => {
     total
   } = props;
 
-  const style = {
+  const styleDisplayNumbers = {
     fontSize: `${scale}px`
   };
 
+  const styleDisplayColor = {
+    backgroundColor: `${displayColor}`
+  };
+
   return (
-    <div className={`display display${isCalcOn ? `--on` : `--off`}`}>
+    <div className={`display display${isCalcOn ? `--on` : `--off`}`} style={styleDisplayColor}>
       <ul className={`display__indicators indicators`}>
         <li className={`indicators__item indicators__res indicators__item${isResult ? `--on` : `--off`}`}>RES</li>
         <li className={`indicators__item indicators__sqrt indicators__item${isSqrtResult ? `--on` : `--off`}`}>SQRT</li>
@@ -27,7 +32,7 @@ const Display = (props) => {
         <li className={`indicators__item indicators__total indicators__item${isCalcOn ? `--total-on` : `--total-off`}`}>{total}</li>
       </ul>
 
-      <span className={`display__numbers`} style={style}>
+      <span className={`display__numbers display__numbers${isCalcOn ? `--on` : `--off`}`} style={styleDisplayNumbers}>
         {showOnDisplay}
       </span>
     </div>
@@ -35,12 +40,13 @@ const Display = (props) => {
 };
 
 Display.propTypes = {
+  displayColor: PropTypes.string.isRequired,
   isCalcOn: PropTypes.bool.isRequired,
   isResult: PropTypes.bool.isRequired,
   isSqrtResult: PropTypes.bool.isRequired,
   isError: PropTypes.bool.isRequired,
   scale: PropTypes.number.isRequired,
-  showOnDisplay: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  showOnDisplay: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   total: PropTypes.string.isRequired
 };
 

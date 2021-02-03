@@ -7,8 +7,10 @@ import './buttons.scss';
 
 const Buttons = (props) => {
   const {
+    buttonPress,
+    changeDisplayColor,
+    clearFocus,
     isCalcOn,
-    pressButton,
   } = props;
 
   const setDisabled = (val) => {
@@ -25,15 +27,20 @@ const Buttons = (props) => {
         <button
           className="onoff"
           id="onoff"
-          onClick={(evt) => pressButton(evt)}
+          onClick={
+            (evt) => {
+              buttonPress(evt);
+              clearFocus(evt);
+            }
+          }
         >
           {isCalcOn ? `ON` : `OFF`}
         </button>
         <div className="onoff-solar_title" >
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+          <div onClick={(evt) => changeDisplayColor(evt)}></div>
+          <div onClick={(evt) => changeDisplayColor(evt)}></div>
+          <div onClick={(evt) => changeDisplayColor(evt)}></div>
+          <div onClick={(evt) => changeDisplayColor(evt)}></div>
         </div>
       </div>
       <div
@@ -45,7 +52,12 @@ const Buttons = (props) => {
               key={i}
               className={`number-btn ${CALC_BTNS[i]}`}
               id={CALC_BTNS[i]}
-              onClick={(evt) => pressButton(evt)}
+              onClick={
+                (evt) => {
+                  buttonPress(evt);
+                  clearFocus(evt);
+                }
+              }
               disabled={setDisabled(ValuesMap[CALC_BTNS[i]])}
             >{ValuesMap[CALC_BTNS[i]]}
             </button>
@@ -57,7 +69,9 @@ const Buttons = (props) => {
 };
 
 Buttons.propTypes = {
+  buttonPress: PropTypes.func.isRequired,
+  changeDisplayColor: PropTypes.func.isRequired,
+  clearFocus: PropTypes.func.isRequired,
   isCalcOn: PropTypes.bool.isRequired,
-  pressButton: PropTypes.func.isRequired,
 };
 export default Buttons;

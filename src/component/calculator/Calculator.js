@@ -11,6 +11,7 @@ const Calculator = () => {
   const [decimal, setDecimal] = useState(false);
   const [display, setDisplay] = useState(`0`);
   const [displayArray, setDisplayArray] = useState([]);
+  const [displayColor, setDisplayColor] = useState(`lightgrey`);
   const [error, setError] = useState(false);
   const [onOff, setOnOff] = useState(false);
   const [result, setResult] = useState(false);
@@ -18,7 +19,6 @@ const Calculator = () => {
   const [sqrtResult, setSqrtResult] = useState(false);
   const [total, setTotal] = useState(`--`);
   const [valueArray, setValueArray] = useState([]);
-  const [btns, setBtns] = useState(``);
 
   const lastValue = valueArray[valueArray.length - 1];
   const beforeLastValue = valueArray.length - displayArray.length;
@@ -30,10 +30,8 @@ const Calculator = () => {
     };
   });
 
-  const clearFocus = () => {
-    btns.forEach((btn) => {
-      btn.blur();
-    });
+  const clearFocus = (evt) => {
+    evt.target.blur();
   };
 
   const clearArrays = (...args) => {
@@ -42,31 +40,37 @@ const Calculator = () => {
     });
   };
 
+  const changeDisplayColor = (evt) => {
+    if (onOff) {
+      setDisplayColor(window.getComputedStyle(evt.target, null).getPropertyValue(`background-color`));
+    }
+  };
+
   const toggleOnOff = () => {
     if (!onOff) {
       setOnOff(true);
       setDisplay(`0`);
-      setValueArray([]);
       setDisplayArray([]);
+      setValueArray([]);
+      setDisplayColor(`lightgreen`);
       setDecimal(false);
       setError(false);
       setScale(initFontSize);
       setResult(false);
       setSqrtResult(false);
       setTotal(`--`);
-      setBtns(document.querySelectorAll(`BUTTON`));
     } else {
       setOnOff(false);
       setDisplay(`0`);
-      setValueArray([]);
       setDisplayArray([]);
+      setDisplayColor(`lightgrey`);
+      setValueArray([]);
       setDecimal(false);
       setError(false);
       setScale(initFontSize);
       setResult(false);
       setSqrtResult(false);
       setTotal(`--`);
-      setBtns(``);
     }
   };
 
@@ -388,12 +392,12 @@ const Calculator = () => {
         return;
     }
     processValue(value);
-    clearFocus();
   };
 
   return (
     <div className={`calculator`}>
       <Display
+        displayColor={displayColor}
         isCalcOn={onOff}
         isResult={result}
         isSqrtResult={sqrtResult}
@@ -403,7 +407,9 @@ const Calculator = () => {
         total={total}
       />
       <Buttons
-        pressButton={processPressedButton}
+        buttonPress={processPressedButton}
+        clearFocus={clearFocus}
+        changeDisplayColor={changeDisplayColor}
         isCalcOn={onOff}
       />
       <div className="calculator_label">

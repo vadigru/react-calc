@@ -17,7 +17,6 @@
     background-color: lightgreen;
   }
   &--off {
-    color: silver;
     background-color: lightgrey;
   }
   &__numbers {
@@ -27,6 +26,10 @@
     justify-content: flex-end;
     align-items: flex-start;
     overflow-x: hidden;
+    &--off {
+      color: dimgray;
+      opacity: 0.1;
+    }
   }
 }
 
