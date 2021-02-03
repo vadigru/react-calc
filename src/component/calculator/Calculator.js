@@ -41,9 +41,8 @@ const Calculator = () => {
   };
 
   const changeDisplayColor = (evt) => {
-    if (onOff) {
-      setDisplayColor(window.getComputedStyle(evt.target, null).getPropertyValue(`background-color`));
-    }
+    setOnOff(true);
+    setDisplayColor(window.getComputedStyle(evt.target, null).getPropertyValue(`background-color`));
   };
 
   const toggleOnOff = () => {
@@ -52,7 +51,7 @@ const Calculator = () => {
       setDisplay(`0`);
       setDisplayArray([]);
       setValueArray([]);
-      setDisplayColor(`lightgreen`);
+      setDisplayColor(displayColor === `lightgrey` ? `lightgreen` : displayColor);
       setDecimal(false);
       setError(false);
       setScale(initFontSize);
