@@ -35,13 +35,13 @@ const Display = (props) => {
 };
 
 Display.propTypes = {
-  isCalcOn: PropTypes.bool,
-  isResult: PropTypes.bool,
-  isSqrtResult: PropTypes.bool,
-  isError: PropTypes.bool,
-  scale: PropTypes.number,
-  showOnDisplay: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  total: PropTypes.string
+  isCalcOn: PropTypes.bool.isRequired,
+  isResult: PropTypes.bool.isRequired,
+  isSqrtResult: PropTypes.bool.isRequired,
+  isError: PropTypes.bool.isRequired,
+  scale: PropTypes.number.isRequired,
+  showOnDisplay: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  total: PropTypes.string.isRequired
 };
 
 export default Display;

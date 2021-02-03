@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Display from '../display/display';
 import Buttons from '../buttons/buttons';
+import {ValuesMap} from '../../const.js';
 
 import './calculator.scss';
 
@@ -17,9 +18,23 @@ const Calculator = () => {
   const [sqrtResult, setSqrtResult] = useState(false);
   const [total, setTotal] = useState(`--`);
   const [valueArray, setValueArray] = useState([]);
+  const [btns, setBtns] = useState(``);
 
   const lastValue = valueArray[valueArray.length - 1];
-  const beforeValue = valueArray.length - displayArray.length;
+  const beforeLastValue = valueArray.length - displayArray.length;
+
+  useEffect(() => {
+    window.addEventListener(`keydown`, processPressedButton);
+    return () => {
+      window.removeEventListener(`keydown`, processPressedButton);
+    };
+  });
+
+  const clearFocus = () => {
+    btns.forEach((btn) => {
+      btn.blur();
+    });
+  };
 
   const clearArrays = (...args) => {
     args.forEach((arr) => {
@@ -39,6 +54,7 @@ const Calculator = () => {
       setResult(false);
       setSqrtResult(false);
       setTotal(`--`);
+      setBtns(document.querySelectorAll(`BUTTON`));
     } else {
       setOnOff(false);
       setDisplay(`0`);
@@ -50,6 +66,7 @@ const Calculator = () => {
       setResult(false);
       setSqrtResult(false);
       setTotal(`--`);
+      setBtns(``);
     }
   };
 
@@ -65,7 +82,7 @@ const Calculator = () => {
     setTotal(`--`);
   };
 
-  const deleteLastValue = () => {
+  const removeLastSymbol = () => {
     if (displayArray.length > 0) {
       const popped = valueArray.pop();
       displayArray.pop();
@@ -85,11 +102,15 @@ const Calculator = () => {
     setSqrtResult(false);
   };
 
-  // result calculation start -------------------------------------------------
-  const handleResult = (res, btnValue) => {
+  // handle final result ------------------------------------------------------
+  const handleResult = (res, value) => {
+    if (res === 0.30000000000000004) {
+      res = 0.3;
+    }
     if (!Number.isInteger(res)) {
       res = Math.round(res * 1000000) / 1000000;
     }
+
     const resArr = res.toString().split(``);
     clearArrays(valueArray, displayArray);
     resArr.forEach((item) => {
@@ -118,50 +139,50 @@ const Calculator = () => {
       setDisplay(``);
     }
     setDisplay(displayArray.join(``));
-    setTotal(btnValue === `=` || btnValue === `√` ? `--` : valueArray.join(``));
-  };
-
-  const calculate = (btnValue) => {
-    let res = eval(valueArray.join(``)); // eslint-disable-line no-eval
-    if (res === 0.30000000000000004) {
-      res = 0.3;
+    setTotal(value === `=` || value === `√` ? `--` : valueArray.join(``));
+    if (sqrtResult) {
+      setSqrtResult(false);
     }
-    handleResult(res, btnValue);
   };
 
-  const getResult = (btnValue) => {
+  // get result from inputed values ---------------------------------------------
+  const calculate = () => {
+    return eval(valueArray.join(``)); // eslint-disable-line no-eval
+  };
+
+  const getResult = (value) => {
     if (typeof lastValue !== `number` && lastValue !== `)`) {
       setError(true);
       return;
     }
-    if (btnValue === `=`) {
+    if (value === `=`) {
       setResult(true);
     }
-    calculate(btnValue);
+    const res = calculate(value);
+    handleResult(res, value);
   };
-  // result calulation end ----------------------------------------------------
 
-  const getSquare = (btnValue) => {
+  // find square root ------------------------------------------------
+  const getSquare = (value) => {
     if (typeof lastValue === `string` && lastValue !== `.`) {
       setError(true);
       return;
     }
-
-    const num = eval(valueArray.join(``)); // eslint-disable-line no-eval
-
-    if (num <= 0 || valueArray.length === 0) {
+    const calculatedValue = calculate(value);
+    if (calculatedValue <= 0 || valueArray.length === 0) {
       setError(true);
       return;
     }
-    const res = Math.sqrt(num);
-    handleResult(res, btnValue);
-    if (result === true) {
+    const res = Math.sqrt(calculatedValue);
+    handleResult(res, value);
+    if (result) {
       setResult(false);
     }
     setError(false);
     setSqrtResult(true);
   };
 
+  // change positive/negative number ------------------------------------------
   const changeSign = () => {
     if (valueArray.length === 0 || valueArray[0] === 0) {
       setError(true);
@@ -172,11 +193,11 @@ const Calculator = () => {
                 lastValue === `.`) &&
                 (displayArray[0] !== `-`)) {
       if (typeof valueArray[valueArray.length - (displayArray.length + 1)] === `string`) {
-        valueArray.splice(beforeValue, 0, `(-`);
+        valueArray.splice(beforeLastValue, 0, `(-`);
         valueArray.splice(valueArray.length, 0, `)`);
         displayArray.unshift(`-`);
       } else {
-        valueArray.splice(beforeValue, 0, `-`);
+        valueArray.splice(beforeLastValue, 0, `-`);
         displayArray.unshift(`-`);
       }
     } else {
@@ -185,71 +206,71 @@ const Calculator = () => {
                  lastValue !== `)`) {
         return;
       }
-      valueArray.splice(beforeValue, 1);
+      valueArray.splice(beforeLastValue, 1);
       displayArray.shift();
     }
     setError(false);
     setDisplay(displayArray.join(``));
   };
 
-  const handlePressedButtons = (btnValue) => {
-    if (btnValue === `·`) {
-      btnValue = `.`;
+  // handling of pressed button ----------------------------------------
+  const processPassedValue = (value) => {
+    if (value === `·`) {
+      value = `.`;
     }
 
-    if ((btnValue === `+` ||
-         btnValue === `-` ||
-         btnValue === `×` ||
-         btnValue === `/`)) {
+    if ((value === `+` ||
+         value === `-` ||
+         value === `×` ||
+         value === `/`)) {
       if ((valueArray.length === 0 ||
     typeof lastValue === `string` &&
            lastValue !== `)` &&
            lastValue !== `.`) &&
-          (btnValue === `+` ||
-           btnValue === `-` ||
-           btnValue === `×` ||
-           btnValue === `/`)) {
+          (value === `+` ||
+           value === `-` ||
+           value === `×` ||
+           value === `/`)) {
         return;
       }
-      if ((btnValue === `+` ||
-           btnValue === `-` ||
-           btnValue === `×` ||
-           btnValue === `/`)) {
+      if ((value === `+` ||
+           value === `-` ||
+           value === `×` ||
+           value === `/`)) {
         getResult();
         setScale(initFontSize);
         setDecimal(false);
       }
     }
 
-    if (display === `0` && btnValue === 0) {
+    if (displayArray.length === 0 && value === 0 && typeof lastValue !== `string`) {
       return;
     }
 
-    if (btnValue === `.`) {
+    if (value === `.`) {
       if (decimal === true) {
         setError(true);
         return;
       }
       setDecimal(true);
-      if (displayArray.length === 0 ||
-         (displayArray.length === 1 && display === `0`)) {
-        btnValue = `0.`;
+      if (displayArray.length === 0) {
+        value = `0.`;
       }
     }
 
-    btnValue = btnValue === `×` ? btnValue = `*` : btnValue = btnValue;
-    btnValue = btnValue === `÷` ? btnValue = `/` : btnValue = btnValue;
-    valueArray.push(btnValue);
-    btnValue = btnValue === `*` ? btnValue = `×` : btnValue = btnValue;
-    btnValue = btnValue === `/` ? btnValue = `÷` : btnValue = btnValue;
-    displayArray.push(btnValue);
+    value = value === `×` ? value = `*` : value = value;
+    value = value === `÷` ? value = `/` : value = value;
+    valueArray.push(value);
+    value = value === `*` ? value = `×` : value = value;
+    value = value === `/` ? value = `÷` : value = value;
+    displayArray.push(value);
 
-    const lastDisplayValue = displayArray[displayArray.length - 1];
+    const lastDispalyValue = displayArray[displayArray.length - 1];
 
-    if (typeof lastDisplayValue !== `number` &&
-               lastDisplayValue !== `.` &&
-               lastDisplayValue !== `0.` &&
-               btnValue !== `-/+`) {
+    if (typeof lastDispalyValue !== `number` &&
+               lastDispalyValue !== `.` &&
+               lastDispalyValue !== `0.` &&
+               value !== `-/+`) {
       clearArrays(displayArray);
     }
 
@@ -264,35 +285,110 @@ const Calculator = () => {
       setSqrtResult(false);
       setError(false);
     }
-    setDisplay(displayArray.join(``) || btnValue);
+    setDisplay(displayArray.join(``) || value);
   };
 
-  const getNumbers = (value) => {
-    const btnValue = value;
-
+  const processValue = (value) => {
     switch (true) {
-      case btnValue === `on/off`:
+      case value === ValuesMap.onoff:
         toggleOnOff();
         break;
-      case btnValue === `C`:
+      case value === ValuesMap.clear:
         clearDisplay();
         break;
-      case btnValue === `⇦`:
-        deleteLastValue();
+      case value === ValuesMap.delete:
+        removeLastSymbol();
         break;
-      case btnValue === `√`:
-        getSquare(`√`);
+      case value === ValuesMap.square:
+        getSquare(ValuesMap.square);
         break;
-      case btnValue === `-/+`:
+      case value === ValuesMap.minusplus:
         changeSign();
         break;
-      case btnValue === `=`:
-        getResult(`=`);
+      case value === ValuesMap.equal:
+        getResult(ValuesMap.equal);
         break;
       default:
-        handlePressedButtons(btnValue);
+        processPassedValue(value);
         break;
     }
+  };
+
+  const processPressedButton = (evt) => {
+    let value = ``;
+    if (evt.target.id === `onoff` || evt.code === `Space`) {
+      value = ValuesMap.onoff;
+      processValue(value);
+    }
+    if (!onOff) {
+      return;
+    }
+    switch (true) {
+      case evt.target.id === `zero` || evt.code === `Numpad0`:
+        value = ValuesMap.zero;
+        break;
+      case evt.target.id === `one` || evt.code === `Numpad1`:
+        value = ValuesMap.one;
+        break;
+      case evt.target.id === `two` || evt.code === `Numpad2`:
+        value = ValuesMap.two;
+        break;
+      case evt.target.id === `three` || evt.code === `Numpad3`:
+        value = ValuesMap.three;
+        break;
+      case evt.target.id === `four` || evt.code === `Numpad4`:
+        value = ValuesMap.four;
+        break;
+      case evt.target.id === `five` || evt.code === `Numpad5`:
+        value = ValuesMap.five;
+        break;
+      case evt.target.id === `six` || evt.code === `Numpad6`:
+        value = ValuesMap.six;
+        break;
+      case evt.target.id === `seven` || evt.code === `Numpad7`:
+        value = ValuesMap.seven;
+        break;
+      case evt.target.id === `eight` || evt.code === `Numpad8`:
+        value = ValuesMap.eight;
+        break;
+      case evt.target.id === `nine` || evt.code === `Numpad9`:
+        value = ValuesMap.nine;
+        break;
+      case evt.target.id === `plus` || evt.code === `NumpadAdd`:
+        value = ValuesMap.plus;
+        break;
+      case evt.target.id === `minus` || evt.code === `NumpadSubtract`:
+        value = ValuesMap.minus;
+        break;
+      case evt.target.id === `multiply` || evt.code === `NumpadMultiply`:
+        value = ValuesMap.multiply;
+        break;
+      case evt.target.id === `divide` || evt.code === `NumpadDivide`:
+        value = ValuesMap.divide;
+        break;
+      case evt.target.id === `equal` || evt.code === `NumpadEnter`:
+        value = ValuesMap.equal;
+        break;
+      case evt.target.id === `minusplus` || evt.code === `KeyT`:
+        value = ValuesMap.minusplus;
+        break;
+      case evt.target.id === `square` || evt.code === `KeyQ`:
+        value = ValuesMap.square;
+        break;
+      case evt.target.id === `clear` || evt.code === `Escape`:
+        value = ValuesMap.clear;
+        break;
+      case evt.target.id === `delete` || evt.code === `Backspace`:
+        value = ValuesMap.delete;
+        break;
+      case evt.target.id === `dot` || evt.code === `NumpadDecimal`:
+        value = ValuesMap.dot;
+        break;
+      default:
+        return;
+    }
+    processValue(value);
+    clearFocus();
   };
 
   return (
@@ -307,7 +403,7 @@ const Calculator = () => {
         total={total}
       />
       <Buttons
-        getNumbers={getNumbers}
+        pressButton={processPressedButton}
         isCalcOn={onOff}
       />
       <div className="calculator_label">
