@@ -51,7 +51,7 @@ const Calculator = () => {
       setDisplay(`0`);
       setDisplayArray([]);
       setValueArray([]);
-      setDisplayColor(displayColor === `lightgrey` ? `lightgreen` : displayColor);
+      setDisplayColor(displayColor === `lightgrey` ? `rgb(144, 238, 144)` : displayColor);
       setDecimal(false);
       setError(false);
       setScale(initFontSize);
@@ -408,6 +408,7 @@ const Calculator = () => {
       <Buttons
         buttonPress={processPressedButton}
         clearFocus={clearFocus}
+        displayColor={displayColor}
         changeDisplayColor={changeDisplayColor}
         isCalcOn={onOff}
       />

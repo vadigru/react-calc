@@ -1,3 +1,10 @@
+export const DISPLAY_COLORS = [
+  `rgb(144, 238, 144)`,
+  `rgb(176, 224, 230)`,
+  `rgb(255, 248, 220)`,
+  `rgb(255, 192, 203)`,
+];
+
 export const CALC_BTNS = [
   `clear`,
   `delete`,
