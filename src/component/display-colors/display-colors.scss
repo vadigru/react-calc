@@ -5,6 +5,7 @@
 
 .onoff-solar {
   width: 100%;
+  margin-bottom: 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,7 +28,7 @@
         opacity: 1;
       }
       &:active {
-        animation: blink 0.1s;  
+        animation: blink 0.1s;
       }
       &--active {
         opacity: 1;

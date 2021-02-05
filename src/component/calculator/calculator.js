@@ -20,7 +20,7 @@ const Calculator = () => {
   const [sqrtResult, setSqrtResult] = useState(false);
   const [total, setTotal] = useState(`--`);
   const [valueArray, setValueArray] = useState([]);
-
+  const [open, setOpen] = useState(false);
   const lastValue = valueArray[valueArray.length - 1];
   const beforeLastValue = valueArray.length - displayArray.length;
 
@@ -46,6 +46,13 @@ const Calculator = () => {
     setDisplayColor(window.getComputedStyle(evt.target, null).getPropertyValue(`background-color`));
   };
 
+  const toggleDescription = () => {
+    if (!open) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  };
   const toggleOnOff = () => {
     if (!onOff) {
       setOnOff(true);
@@ -227,7 +234,7 @@ const Calculator = () => {
     if ((value === `+` ||
          value === `-` ||
          value === `×` ||
-         value === `/`)) {
+         value === `÷`)) {
       if ((valueArray.length === 0 ||
     typeof lastValue === `string` &&
            lastValue !== `)` &&
@@ -235,13 +242,13 @@ const Calculator = () => {
           (value === `+` ||
            value === `-` ||
            value === `×` ||
-           value === `/`)) {
+           value === `÷`)) {
         return;
       }
       if ((value === `+` ||
            value === `-` ||
            value === `×` ||
-           value === `/`)) {
+           value === `÷`)) {
         getResult();
         setScale(initFontSize);
         setDecimal(false);
@@ -374,7 +381,7 @@ const Calculator = () => {
       case evt.target.id === `equal` || evt.code === `NumpadEnter`:
         value = ValuesMap.equal;
         break;
-      case evt.target.id === `minusplus` || evt.code === `KeyT`:
+      case evt.target.id === `minusplus` || evt.code === `KeyW`:
         value = ValuesMap.minusplus;
         break;
       case evt.target.id === `square` || evt.code === `KeyQ`:
@@ -410,13 +417,31 @@ const Calculator = () => {
       total
     }}
     >
-      <div className={`calculator`}>
-        <Display />
-        <Buttons />
-        <div className="calculator_label">
-          <span className="calculator_model">BK201</span>
+      <div className={`container`}>
+        <div className={`calc`}>
+          <Display />
+          <Buttons />
+          <div className={`info`}>
+            <div className={`help-btn`} onClick={toggleDescription}>
+              <span className={`help-btn__title`}>help</span>
+            </div>
+            <span className={`model`}>BK201</span>
+          </div>
+        </div>
+
+        <div className={`description  description${open ? `--open` : ``}`}>
+          <ul className={`description__list`}>
+            <li>To operate from keyborad use your Numpad</li>
+            <li>To On/Off use Spacebar</li>
+            <li>To clear display use Escape</li>
+            <li>To remove last symbol use Backspace</li>
+            <li>To find square root use Q</li>
+            <li>To chnage positive/negative sign use W</li>
+          </ul>
+          <div className={`description__bottom`}></div>
         </div>
       </div>
+
     </Context.Provider>
   );
 };

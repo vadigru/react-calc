@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import Context from '../../context.js';
 
+import ButtonOnOff from '../button-onoff/button-onoff.js';
 import DisplayColors from '../display-colors/display-colors.js';
 import {CALC_BTNS, ValuesMap} from '../../const.js';
 
@@ -25,18 +26,7 @@ const Buttons = () => {
   return (
     <>
       <div className="onoff-solar">
-        <button
-          className="onoff"
-          id="onoff"
-          onClick={
-            (evt) => {
-              processPressedButton(evt);
-              clearFocus(evt);
-            }
-          }
-        >
-          {onOff ? `ON` : `OFF`}
-        </button>
+        <ButtonOnOff />
         <DisplayColors />
       </div>
       <div
