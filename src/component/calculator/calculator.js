@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import Context from '../../context.js';
 import Display from '../display/display';
 import Buttons from '../buttons/buttons';
 import {ValuesMap} from '../../const.js';
@@ -146,6 +147,7 @@ const Calculator = () => {
     if (sqrtResult) {
       setSqrtResult(false);
     }
+    setError(false);
   };
 
   // get result from inputed values ---------------------------------------------
@@ -394,28 +396,28 @@ const Calculator = () => {
   };
 
   return (
-    <div className={`calculator`}>
-      <Display
-        displayColor={displayColor}
-        isCalcOn={onOff}
-        isResult={result}
-        isSqrtResult={sqrtResult}
-        isError={error}
-        scale={scale}
-        showOnDisplay={display}
-        total={total}
-      />
-      <Buttons
-        buttonPress={processPressedButton}
-        clearFocus={clearFocus}
-        displayColor={displayColor}
-        changeDisplayColor={changeDisplayColor}
-        isCalcOn={onOff}
-      />
-      <div className="calculator_label">
-        <span className="calculator_model">BK201</span>
+    <Context.Provider value={{
+      changeDisplayColor,
+      clearFocus,
+      display,
+      displayColor,
+      error,
+      onOff,
+      processPressedButton,
+      result,
+      sqrtResult,
+      scale,
+      total
+    }}
+    >
+      <div className={`calculator`}>
+        <Display />
+        <Buttons />
+        <div className="calculator_label">
+          <span className="calculator_model">BK201</span>
+        </div>
       </div>
-    </div>
+    </Context.Provider>
   );
 };
 

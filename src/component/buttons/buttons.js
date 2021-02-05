@@ -1,23 +1,24 @@
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
-import {CALC_BTNS, DISPLAY_COLORS, ValuesMap} from '../../const.js';
+import Context from '../../context.js';
+
+import DisplayColors from '../display-colors/display-colors.js';
+import {CALC_BTNS, ValuesMap} from '../../const.js';
 
 import './buttons.scss';
 
-const Buttons = (props) => {
+const Buttons = () => {
   const {
-    buttonPress,
-    changeDisplayColor,
     clearFocus,
-    displayColor,
-    isCalcOn,
-  } = props;
+    onOff,
+    processPressedButton,
+  } = useContext(Context);
 
   const setDisabled = (val) => {
     if (val === `on/off`) {
       return false;
     } else {
-      return !isCalcOn;
+      return !onOff;
     }
   };
 
@@ -29,32 +30,14 @@ const Buttons = (props) => {
           id="onoff"
           onClick={
             (evt) => {
-              buttonPress(evt);
+              processPressedButton(evt);
               clearFocus(evt);
             }
           }
         >
-          {isCalcOn ? `ON` : `OFF`}
+          {onOff ? `ON` : `OFF`}
         </button>
-        <div className="solar" onClick={(evt) => changeDisplayColor(evt)}>
-          {DISPLAY_COLORS.map((color, i) => {
-            return (
-              i === 0 ?
-                <div
-                  key={i}
-                  className={`solar__tile solar__tile${isCalcOn && displayColor === color ? `--active` : ``}`}
-                  style={{backgroundColor: color}}
-                >
-                </div> :
-                <div
-                  key={i}
-                  className={`solar__tile solar__tile${displayColor === color ? `--active` : ``}`}
-                  style={{backgroundColor: color}}
-                >
-                </div>
-            );
-          })}
-        </div>
+        <DisplayColors />
       </div>
       <div
         className={`number-btns`}
@@ -67,12 +50,13 @@ const Buttons = (props) => {
               id={CALC_BTNS[i]}
               onClick={
                 (evt) => {
-                  buttonPress(evt);
+                  processPressedButton(evt);
                   clearFocus(evt);
                 }
               }
               disabled={setDisabled(ValuesMap[CALC_BTNS[i]])}
-            >{ValuesMap[CALC_BTNS[i]]}
+            >
+              {ValuesMap[CALC_BTNS[i]]}
             </button>
           );
         })}
@@ -82,10 +66,10 @@ const Buttons = (props) => {
 };
 
 Buttons.propTypes = {
-  buttonPress: PropTypes.func.isRequired,
-  changeDisplayColor: PropTypes.func.isRequired,
-  clearFocus: PropTypes.func.isRequired,
-  displayColor: PropTypes.string.isRequired,
-  isCalcOn: PropTypes.bool.isRequired,
+  context: PropTypes.shape({
+    processPressedButton: PropTypes.func.isRequired,
+    clearFocus: PropTypes.func.isRequired,
+    onOff: PropTypes.bool.isRequired,
+  })
 };
 export default Buttons;

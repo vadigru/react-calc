@@ -40,47 +40,6 @@
   }
 }
 
-@keyframes mymove {
-  0%   {opacity: 0.1; background: white;}
-  100% {opacity: 1; background: white;}
-}
-
-.onoff-solar {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  & .solar{
-    width: 50%;
-    margin-right: 11%;
-    display: flex;
-    border: 2px solid black;
-    border-radius: 5px;
-    background-color: darkslategrey;
-    &__tile {
-      width: 25%;
-      padding: 10% 0;
-      border-right: 2px solid black;
-      transition: all 0.3s ease-in-out;
-      opacity: 0.2;
-      &:hover {
-        cursor: pointer;
-        opacity: 1;
-      }
-      &:active {
-        animation: mymove 0.1s;
-      }
-      &--active {
-        opacity: 1;
-      }
-      &:last-child {
-        border-right: none;
-      }
-    }
-  }
-}
-
 .equal {
   background-color: cornflowerblue;
 }
