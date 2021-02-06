@@ -103,7 +103,10 @@ const Calculator = () => {
       }
     }
     if (displayArray.length === 0) {
-      setDisplay(lastValue);
+      if (typeof lastValue === `string`) {
+        valueArray.pop();
+      }
+      setDisplay(``);
     }
     if (displayArray.length < 12) {
       setScale(initFontSize);
@@ -164,7 +167,7 @@ const Calculator = () => {
 
   const getResult = (value) => {
     if (typeof lastValue !== `number` && lastValue !== `)`) {
-      setError(true);
+      // setError(true);
       return;
     }
     if (value === `=`) {
@@ -230,19 +233,18 @@ const Calculator = () => {
     if (value === `·`) {
       value = `.`;
     }
-
     if ((value === `+` ||
          value === `-` ||
          value === `×` ||
          value === `÷`)) {
       if ((valueArray.length === 0 ||
-    typeof lastValue === `string` &&
-           lastValue !== `)` &&
-           lastValue !== `.`) &&
-          (value === `+` ||
-           value === `-` ||
-           value === `×` ||
-           value === `÷`)) {
+     typeof lastValue === `string` &&
+                 lastValue !== `)` &&
+                lastValue !== `.`) &&
+                    (value === `+` ||
+                     value === `-` ||
+                     value === `×` ||
+                     value === `÷`)) {
         return;
       }
       if ((value === `+` ||
@@ -330,55 +332,56 @@ const Calculator = () => {
     let value = ``;
     if (evt.target.id === `onoff` || evt.code === `Space`) {
       value = ValuesMap.onoff;
+      evt.preventDefault();
       processValue(value);
     }
     if (!onOff) {
       return;
     }
     switch (true) {
-      case evt.target.id === `zero` || evt.code === `Numpad0`:
+      case evt.target.id === `zero` || evt.key === `0`:
         value = ValuesMap.zero;
         break;
-      case evt.target.id === `one` || evt.code === `Numpad1`:
+      case evt.target.id === `one` || evt.key === `1`:
         value = ValuesMap.one;
         break;
-      case evt.target.id === `two` || evt.code === `Numpad2`:
+      case evt.target.id === `two` || evt.key === `2`:
         value = ValuesMap.two;
         break;
-      case evt.target.id === `three` || evt.code === `Numpad3`:
+      case evt.target.id === `three` || evt.key === `3`:
         value = ValuesMap.three;
         break;
-      case evt.target.id === `four` || evt.code === `Numpad4`:
+      case evt.target.id === `four` || evt.key === `4`:
         value = ValuesMap.four;
         break;
-      case evt.target.id === `five` || evt.code === `Numpad5`:
+      case evt.target.id === `five` || evt.key === `5`:
         value = ValuesMap.five;
         break;
-      case evt.target.id === `six` || evt.code === `Numpad6`:
+      case evt.target.id === `six` || evt.key === `6`:
         value = ValuesMap.six;
         break;
-      case evt.target.id === `seven` || evt.code === `Numpad7`:
+      case evt.target.id === `seven` || evt.key === `7`:
         value = ValuesMap.seven;
         break;
-      case evt.target.id === `eight` || evt.code === `Numpad8`:
+      case evt.target.id === `eight` || evt.key === `8`:
         value = ValuesMap.eight;
         break;
-      case evt.target.id === `nine` || evt.code === `Numpad9`:
+      case evt.target.id === `nine` || evt.key === `9`:
         value = ValuesMap.nine;
         break;
-      case evt.target.id === `plus` || evt.code === `NumpadAdd`:
+      case evt.target.id === `plus` || evt.key === ValuesMap.plus:
         value = ValuesMap.plus;
         break;
-      case evt.target.id === `minus` || evt.code === `NumpadSubtract`:
+      case evt.target.id === `minus` || evt.key === ValuesMap.minus:
         value = ValuesMap.minus;
         break;
-      case evt.target.id === `multiply` || evt.code === `NumpadMultiply`:
+      case evt.target.id === `multiply` || evt.key === `*`:
         value = ValuesMap.multiply;
         break;
-      case evt.target.id === `divide` || evt.code === `NumpadDivide`:
+      case evt.target.id === `divide` || evt.key === `/`:
         value = ValuesMap.divide;
         break;
-      case evt.target.id === `equal` || evt.code === `NumpadEnter`:
+      case evt.target.id === `equal` || evt.key === `Enter`:
         value = ValuesMap.equal;
         break;
       case evt.target.id === `minusplus` || evt.code === `KeyW`:
@@ -393,7 +396,7 @@ const Calculator = () => {
       case evt.target.id === `delete` || evt.code === `Backspace`:
         value = ValuesMap.delete;
         break;
-      case evt.target.id === `dot` || evt.code === `NumpadDecimal`:
+      case evt.target.id === `dot` || evt.key === `.`:
         value = ValuesMap.dot;
         break;
       default:
@@ -425,18 +428,18 @@ const Calculator = () => {
             <div className={`help-btn`} onClick={toggleDescription}>
               <span className={`help-btn__title`}>help</span>
             </div>
-            <span className={`model`}>BK201</span>
+            <span className={`model`}><i>Electronica</i> VG-2021</span>
           </div>
         </div>
 
         <div className={`description  description${open ? `--open` : ``}`}>
           <ul className={`description__list`}>
-            <li>To operate from keyborad use your Numpad</li>
-            <li>To On/Off use Spacebar</li>
-            <li>To clear display use Escape</li>
-            <li>To remove last symbol use Backspace</li>
-            <li>To find square root use Q</li>
-            <li>To chnage positive/negative sign use W</li>
+            <li>On/Off - <kbd>Spacebar</kbd></li>
+            <li>Clear display - <kbd>Escape</kbd></li>
+            <li>Remove last symbol - <kbd>Backspace</kbd></li>
+            <li>Find square root - <kbd>Q</kbd></li>
+            <li>Chnage positive/negative sign - <kbd>W</kbd></li>
+            <li>Get result of operation - <kbd>Enter</kbd></li>
           </ul>
           <div className={`description__bottom`}></div>
         </div>
