@@ -444,7 +444,6 @@ const Calculator = () => {
           <div className={`description__bottom`}></div>
         </div>
       </div>
-
     </Context.Provider>
   );
 };
