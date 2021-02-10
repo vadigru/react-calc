@@ -434,6 +434,7 @@ const Calculator = () => {
 
         <div className={`description  description${open ? `--open` : ``}`}>
           <ul className={`description__list`}>
+            <li>You can use <kbd>Numeric Keys</kbd> or <kbd>Numeric Keypad</kbd></li>
             <li>On/Off - <kbd>Spacebar</kbd></li>
             <li>Clear display - <kbd>Escape</kbd></li>
             <li>Remove last symbol - <kbd>Backspace</kbd></li>
