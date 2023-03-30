@@ -58,7 +58,7 @@
     "src/**/*.scss"
   ],
   "engines": {
-    "node": "18.x"
+    "node": "14.x"
   },
   "externals": {
     "react": "react"
