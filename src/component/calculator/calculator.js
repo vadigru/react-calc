@@ -118,6 +118,15 @@ const Calculator = () => {
 
   // handle final result ------------------------------------------------------
   const handleResult = (res, value) => {
+    if (res === Infinity) {
+      setValueArray([]);
+      setDisplayArray([]);
+      setDisplay(``);
+      setTotal(`--`);
+      setError(true);
+      setResult(false);
+      return;
+    }
     if (res === 0.30000000000000004) {
       res = 0.3;
     }
