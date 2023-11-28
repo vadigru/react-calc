@@ -57,6 +57,9 @@
     "src/img/**/*.svg",
     "src/**/*.scss"
   ],
+  "engines": {
+    "node": "18.x"
+  },
   "externals": {
     "react": "react"
   },
